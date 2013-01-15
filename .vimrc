@@ -3,6 +3,8 @@ set nocompatible
 
 " Some environment based settings
 if has("win32") || has("win64")
+	source $VIMRUNTIME/mswin.vim
+	behave mswin
 	set guifont=Ubuntu\ Mono:h12
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
@@ -86,10 +88,11 @@ set tabstop=4
 set shiftwidth=4
 set smarttab
 set noexpandtab
+set autoindent
 
 " Show “invisible” characters
-set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
-set list
+" set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
+" set list
 
 " Highlight searches
 set hlsearch
@@ -104,7 +107,9 @@ set incsearch
 set laststatus=2
 
 " Enable mouse in all modes
-set mouse=a
+if has('mouse')
+	set mouse=a
+endif
 
 " Disable error bells
 set noerrorbells
@@ -172,3 +177,4 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead *.h set formatprg=astyle\ -t4pbSYM60m0HjOok3U
 	autocmd BufNewFile,BufRead *.xml set formatprg=xmllint\ --format\ -
 endif
+
