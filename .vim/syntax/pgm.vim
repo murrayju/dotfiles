@@ -931,6 +931,7 @@ syn match myConstant "\<PSOCONTROL_Fire\>"
 syn match myConstant "\<PSOCONTROL_FireContinuous\>"
 syn match myConstant "\<PSOCONTROL_On\>"
 syn match myConstant "\<PSOCONTROL_Reset\>"
+syn match myConstant "\<Math.PI\>"
 
 
 " DataCollection
