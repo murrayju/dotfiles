@@ -3,8 +3,8 @@ set nocompatible
 
 " Some environment based settings
 if has("win32") || has("win64")
-	source $VIMRUNTIME/mswin.vim
-	behave mswin
+	"source $VIMRUNTIME/mswin.vim
+	"behave mswin
 	set guifont=Ubuntu\ Mono:h12
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
@@ -32,7 +32,8 @@ if has("gui_running")
 endif
 
 " Use the OS clipboard by default (on versions compiled with `+clipboard`)
-" set clipboard=unnamed
+set clipboard=unnamed
+
 " Enhance command-line completion
 set wildmenu
 
@@ -54,10 +55,6 @@ set fileencoding=utf8 nobomb
 
 " Change mapleader
 let mapleader=","
-
-" Don’t add empty newlines at the end of files
-set binary
-set noeol
 
 " Centralize backups, swapfiles and undo history
 set backupdir=~/.vim/backups
