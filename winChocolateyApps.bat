@@ -40,7 +40,7 @@ call cinst filezilla
 call cinst launchy
 call cinst fiddler
 call cinst autohotkey_l
-cisnt putty
+call cinst putty
 call cinst VirtualCloneDrive
 call cinst vlc
 call cinst windirstat
