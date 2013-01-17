@@ -16,10 +16,14 @@ else
 endif
 
 " Syntax highlighting
-let g:molokai_original = 0
-set t_Co=256
-:colorscheme molokai
-:syntax on
+if ((has("win32") || has("win64")) && !has("gui_running"))
+	color railscat
+else
+	let g:molokai_original = 0
+	set t_Co=256
+	color molokai
+endif
+syntax on
 
 " Appearance options
 if has("gui_running")
