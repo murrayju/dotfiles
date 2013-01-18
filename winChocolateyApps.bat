@@ -3,9 +3,11 @@
 rem This installs Chocolatey NuGet, and a set of basic apps
 
 rem Update Chocolatey if it is installed
+echo Updating Chocolatey...
 call cup
 if %errorlevel%==0 goto noInst
 rem Install Chocolatey if it is missing
+echo Chocolatey not yet installed, installing...
 @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('http://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%systemdrive%\chocolatey\bin
 :noInst
 
