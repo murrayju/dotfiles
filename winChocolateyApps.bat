@@ -1,32 +1,55 @@
 @echo off
+:: This installs Chocolatey NuGet, and a set of basic apps
 
-rem This installs Chocolatey NuGet, and a set of basic apps
+:: Automatically check & get admin rights
+:checkPrivileges 
+NET FILE 1>NUL 2>NUL
+if '%errorlevel%' == '0' ( goto gotPrivileges ) else ( goto getPrivileges ) 
 
-rem Update Chocolatey if it is installed
+:getPrivileges 
+if '%1'=='ELEV' (shift & goto gotPrivileges)  
+ECHO. 
+ECHO **************************************
+ECHO Invoking UAC for Privilege Escalation 
+ECHO **************************************
+
+setlocal DisableDelayedExpansion
+set "batchPath=%~0"
+setlocal EnableDelayedExpansion
+ECHO Set UAC = CreateObject^("Shell.Application"^) > "%temp%\OEgetPrivileges.vbs" 
+ECHO UAC.ShellExecute "!batchPath!", "ELEV", "", "runas", 1 >> "%temp%\OEgetPrivileges.vbs" 
+cmd /k "%temp%\OEgetPrivileges.vbs" 
+exit /B 
+
+:gotPrivileges 
+setlocal & pushd .
+:: Main program starts here
+
+:: Update Chocolatey if it is installed
 echo Updating Chocolatey...
 call cup
 if %errorlevel%==0 goto noInst
-rem Install Chocolatey if it is missing
+:: Install Chocolatey if it is missing
 echo Chocolatey not yet installed, installing...
 @powershell -NoProfile -ExecutionPolicy unrestricted -Command "iex ((new-object net.webclient).DownloadString('http://chocolatey.org/install.ps1'))" && SET PATH=%PATH%;%systemdrive%\chocolatey\bin
 :noInst
 
-rem basic apps
+:: basic apps
 call cinst 7zip
 call cinst 7zip.commandline
 call cinst freecommander
 
-rem browsers
+:: browsers
 call cinst GoogleChrome
 call cinst Firefox
 
-rem Install GnuWin32 apps
+:: Install GnuWin32 apps
 call cinst GnuWin
 
-rem Sysinternals package
+:: Sysinternals package
 call cinst sysinternals
 
-rem Dev tools
+:: Dev tools
 call cinst git
 call cinst tortoisegit
 call cinst vim
@@ -37,7 +60,7 @@ call cinst dotPeek
 call cinst DotNet4.5
 call cinst wireshark
 
-rem misc apps
+:: misc apps
 call cinst filezilla
 call cinst launchy
 call cinst fiddler
@@ -48,3 +71,5 @@ call cinst vlc
 call cinst windirstat
 call cinst winscp
 call cinst javaruntime
+
+pause
