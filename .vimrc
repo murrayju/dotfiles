@@ -196,5 +196,8 @@ if has("autocmd")
 		autocmd!
 		autocmd BufWinEnter * call ResCur()
 	augroup END
+
+	" Also load indent files, to automatically do language-dependent indenting.
+	filetype plugin indent on
 endif
 
