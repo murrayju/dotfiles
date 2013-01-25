@@ -128,6 +128,9 @@ syn keyword myKeyword    Flush
 syn keyword myKeyword    AutoFlush
 syn keyword myKeyword    Timeout
 syn keyword myKeyword    ErrorDecode
+syn keyword myKeyword    ProgramControl
+syn keyword myKeyword    Restrict
+syn keyword myKeyword    Allow
 
 
 " Functions/Commands
