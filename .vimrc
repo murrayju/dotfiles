@@ -5,14 +5,14 @@ set nocompatible
 if has("win32") || has("win64")
 	"source $VIMRUNTIME/mswin.vim
 	"behave mswin
-	set guifont=Ubuntu\ Mono:h12
+	set guifont=Ubuntu\ Mono:h11
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
 	set fileformats=dos,unix
 elseif has("mac")
-	set guifont=Envy\ Code\ R:h14
+	set guifont=Envy\ Code\ R:h12
 else
-	set guifont=Envy\ Code\ R\ 14
+	set guifont=Envy\ Code\ R\ 12
 endif
 
 " Syntax highlighting
