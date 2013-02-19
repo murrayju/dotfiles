@@ -117,6 +117,9 @@ syn keyword myKeyword    CheckPassword
 syn keyword myKeyword    SignalLog
 syn keyword myKeyword    IndexToMask
 syn keyword myKeyword    MaskToIndex
+syn keyword myKeyword    ExtractDoubleHigh
+syn keyword myKeyword    ExtractDoubleLow
+syn keyword myKeyword    ExtractSingle
 syn keyword myKeyword    Network
 syn keyword myKeyword    Connect
 syn keyword myKeyword    Listen

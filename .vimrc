@@ -99,6 +99,7 @@ set autoindent
 set hlsearch
 
 " Ignore case of searches
+set ignorecase
 set smartcase
 
 " Highlight dynamically as pattern is typed
