@@ -120,6 +120,9 @@ syn keyword myKeyword    MaskToIndex
 syn keyword myKeyword    ExtractDoubleHigh
 syn keyword myKeyword    ExtractDoubleLow
 syn keyword myKeyword    ExtractSingle
+syn keyword myKeyword    Ceil
+syn keyword myKeyword    Floor
+syn keyword myKeyword    Round
 syn keyword myKeyword    Network
 syn keyword myKeyword    Connect
 syn keyword myKeyword    Listen
