@@ -8,9 +8,16 @@ call vundle#rc()
 " required! 
 Bundle 'gmarik/vundle'
 
-" My Bundles here:
+" Git extensions
 Bundle 'tpope/vim-fugitive'
+
+" Better motion
 Bundle 'Lokaltog/vim-easymotion'
+
+" Status bar
+" Bundle 'Lokaltog/powerline'
+" set rtp+=~/.vim/bundle/powerline/bindings/vim
+
 "Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 "Bundle 'tpope/vim-rails.git'
 " vim-scripts repos
