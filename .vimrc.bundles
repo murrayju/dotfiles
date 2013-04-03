@@ -14,6 +14,9 @@ Bundle 'tpope/vim-fugitive'
 " Better motion
 Bundle 'Lokaltog/vim-easymotion'
 
+" Git gutter
+Bundle 'airblade/vim-gitgutter'
+
 " Status bar
 " Bundle 'Lokaltog/powerline'
 " set rtp+=~/.vim/bundle/powerline/bindings/vim
