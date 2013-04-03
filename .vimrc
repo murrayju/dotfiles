@@ -1,5 +1,4 @@
-" Make Vim more useful
-set nocompatible
+set nocompatible               " be iMproved
 
 " Some environment based settings
 if has("win32") || has("win64")
@@ -14,6 +13,12 @@ elseif has("mac")
 else
 	set guifont=Envy\ Code\ R\ 12
 endif
+
+" Vundle Bundles
+if filereadable(expand("~/.vimrc.bundles"))
+	source ~/.vimrc.bundles
+endif
+
 
 " Syntax highlighting
 if ((has("win32") || has("win64")) && !has("gui_running"))
