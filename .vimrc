@@ -4,6 +4,7 @@ set nocompatible               " be iMproved
 if has("win32") || has("win64")
 	"source $VIMRUNTIME/mswin.vim
 	"behave mswin
+	"set guifont=Ubuntu\ Mono:h11
 	set guifont=Consolas:h11
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
@@ -128,7 +129,7 @@ set statusline +=%4*\ %<%F%*            "full path
 set statusline +=%2*%m%*                "modified flag
 set statusline +=%1*%=%5l%*             "current line
 set statusline +=%2*/%L%*               "total lines
-set statusline +=%1*%4v\ %*             "virtual column number
+set statusline +=%1*%4c%V\ %*             "virtual column number
 set statusline +=%2*0x%04B\ %*          "character under cursor
 
 
