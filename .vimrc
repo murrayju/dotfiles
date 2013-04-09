@@ -4,7 +4,7 @@ set nocompatible               " be iMproved
 if has("win32") || has("win64")
 	"source $VIMRUNTIME/mswin.vim
 	"behave mswin
-	set guifont=Ubuntu\ Mono:h11
+	set guifont=Consolas:h11
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
 	set fileformats=dos,unix
@@ -212,6 +212,7 @@ if has("autocmd")
 
 	" Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+	autocmd BufNewFile,BufRead *.hta setfiletype html syntax=html
 
 	" Add support for custom highlighting
 	autocmd BufNewFile,BufRead *.pgm set syn=pgm
