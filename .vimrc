@@ -8,7 +8,7 @@ if has("win32") || has("win64")
 	set guifont=Consolas:h11
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
-	set fileformats=dos,unix
+	set fileformats=dos,unix,mac
 elseif has("mac")
 	set guifont=Envy\ Code\ R:h12
 else
