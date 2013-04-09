@@ -2,9 +2,6 @@ set nocompatible               " be iMproved
 
 " Some environment based settings
 if has("win32") || has("win64")
-	"source $VIMRUNTIME/mswin.vim
-	"behave mswin
-	"set guifont=Ubuntu\ Mono:h11
 	set guifont=Consolas:h11
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
