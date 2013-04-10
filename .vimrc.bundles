@@ -9,6 +9,7 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Git extensions
+Bundle 'tpope/vim-git'
 Bundle 'tpope/vim-fugitive'
 
 " Better motion
@@ -19,6 +20,18 @@ Bundle 'airblade/vim-gitgutter'
 
 " Molokai color scheme
 Bundle 'tomasr/molokai'
+
+" TComment
+Bundle 'tomtom/tcomment_vim'
+
+" Unimpaired
+Bundle 'tpope/vim-unimpaired'
+
+" Markdown syntax
+Bundle 'tpope/vim-markdown'
+
+" Surrounds (mostly for html)
+Bundle 'tpope/vim-surround'
 
 " Status bar
 " Bundle 'Lokaltog/powerline'
