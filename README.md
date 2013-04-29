@@ -168,6 +168,29 @@ In visual mode:
 
 	S<p class="important">	:: surround and indent the selected lines with the <p> tag
 
+## AutoHotkey Scripts
+
+The `bootstrap.bat` file will automatically launch `Main.ahk`, and configure it to start on boot.
+
+### `F4` Edit in Vim
+
+Highlight any file in explorer, or any text path in any application, and press `F4` to open the path for editing in Vim.
+
+## Visual Studio Tweaks
+
+### Edit current file in Vim
+Go to `Tools->External Tools...`, `Add` a new entry:
+
+_Title:_ `&Vim`
+_Command:_ `C:\Program Files (x86)\vim\vim73\gvim.exe`
+_Arguments:_ `--servername VimStudio --remote-silent +"call cursor($(CurLine),$(CurCol))" "$(ItemFileName)$(ItemExt)"`
+_Initial directory:_ `$(ItemDir)`
+
+Move this entry to the top of the list, so that it is command number 1.
+Next, map this to a keyboard shortcut. Go to `Tools->Options...`, `Environment->Keyboard`.
+Locate the command `Tools.ExternalCommand1`
+Assign it to a shortcut key: _Global_ `F4`
+
 ## Feedback
 
 Suggestions/improvements
