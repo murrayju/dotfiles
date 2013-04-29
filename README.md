@@ -27,7 +27,7 @@ set -- -f; source bootstrap.sh
 
 #### Windows
 
-```bash
+```bat
 git clone https://github.com/murrayju/dotfiles.git .dotfiles
 cd .dotfiles
 bootstrap.bat
@@ -35,7 +35,7 @@ bootstrap.bat
 
 To update, just run the bootstrap script again
 
-```bash
+```bat
 cd .dotfiles
 bootstrap.bat
 ```
@@ -97,6 +97,76 @@ When setting up a new Mac, you may want to install some common Homebrew formulae
 ```bash
 ./.brew
 ```
+
+### Install Chocolatey Apps
+
+When setting up a new PC, you can automate the process of installing some common, useful apps using Chocolatey Nuget. This script will install/update Chocolatey, and then install/update a list of apps.
+
+```bat
+ChocolateyBootstrap.bat
+```
+
+## Included vim plugins
+
+### EasyMotion
+<https://github.com/Lokaltog/vim-easymotion>
+
+	,,{motion}
+
+### fugitive.vim
+<https://github.com/tpope/vim-fugitive>
+
+	:Gstatus
+	:Gedit
+	:Gcommit
+	:Gmove
+	:Gremove
+	:Ggrep
+
+### TComment
+<https://github.com/tomtom/tcomment_vim>
+
+	gc{motion}   :: Toggle comments (for small comments within one line 
+					the &filetype_inline style will be used, if 
+					defined)
+	gc<Count>c{motion} :: Toggle comment text with count argument 
+						  (see |tcomment#Comment()|)
+	gcc          :: Toggle comment for the current line
+	gC{motion}   :: Comment region
+	gCc          :: Comment the current line
+
+In visual mode:
+
+	gc           :: Toggle comments
+	gC           :: Comment selected text
+
+### unimpaired.vim
+<https://github.com/tpope/vim-unimpaired>
+
+	[<Space>	:: newline before
+	]<Space>	:: newline after
+	[e			:: exchange with above
+	]e			:: exchange with below
+	[x			:: XML encode
+	]x			:: XML decode
+	[u			:: URL encode
+	]u			:: URL decode
+	[y			:: C string escape
+	]y			:: C string un-escape
+
+### surround.vim
+<https://github.com/tpope/vim-surround>
+
+	cs"'	:: Change surround from " to '
+	cs'<q>	:: Change surround from ' to <q>
+	cst"	:: Change surround from tag to "
+	ds"		:: Delete the " surround
+	ysiw]	:: Create new surround of [] around current word
+	yss)	:: Create new surround of () around entire line
+
+In visual mode:
+
+	S<p class="important">	:: surround and indent the selected lines with the <p> tag
 
 ## Feedback
 
