@@ -63,14 +63,16 @@ set gdefault
 set encoding=utf-8 nobomb
 set fileencoding=utf8 nobomb
 
-" Change mapleader
+" Change mapleader (instead of backslash)
 let mapleader=","
+let g:mapleader=","
 
 " Centralize backups, swapfiles and undo history
 set backupdir=~/.vim/backups
 set directory=~/.vim/swaps
 if exists("&undodir")
 	set undodir=~/.vim/undo
+	set undofile
 endif
 
 " Respect modeline in files
@@ -190,6 +192,22 @@ inoremap jk <ESC>
 
 " Auto reload files (when not modified locally)
 set autoread
+
+" Set to auto change directory to the file that I am editing
+set autochdir
+
+" backspace in Visual mode deletes selection
+vnoremap <BS> d
+
+" Use the same symbols as TextMate for tabstops and EOLs
+set listchars=tab:▸\ ,eol:¬
+nmap <leader>l :set list!<CR>
+
+" Clear search highlighting
+nnoremap <esc> :noh<cr><esc>
+
+" Pressing F5 lists all buffers, just type number
+map <F5> :ls<CR>:e #
 
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files
