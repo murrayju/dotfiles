@@ -51,7 +51,7 @@ Console2Exe(command)
 Vim(file)
 {
 	global ProgFiles32
-	Run "%ProgFiles32%\vim\vim73\gvim.exe" %file%
+	Run "%ProgFiles32%\vim\vim73\gvim.exe" "%file%"
 }
 
 ; GetSelectedText or FilePath in Windows Explorer
