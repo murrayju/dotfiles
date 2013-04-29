@@ -1,8 +1,10 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE}")"
 git pull
+git submodule update --init
 function doIt() {
 	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" -av . ~
+	vim -u .vimrc.bundles +BundleInstall! +BundleClean +qall
 }
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	doIt
