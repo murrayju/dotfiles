@@ -30,14 +30,14 @@ set -- -f; source bootstrap.sh
 ```bash
 git clone https://github.com/murrayju/dotfiles.git .dotfiles
 cd .dotfiles
-winbootstrap.bat
+bootstrap.bat
 ```
 
 To update, just run the bootstrap script again
 
 ```bash
 cd .dotfiles
-winbootstrap.sh
+bootstrap.bat
 ```
 
 ### Git-free install
