@@ -81,9 +81,8 @@ endif
 set modeline
 set modelines=4
 
-" Enable per-directory .vimrc files and disable unsafe commands in them
-" set exrc
-" set secure
+" Do not consider numbers as octal
+set nrformats=hex
 
 " Enable line numbers
 set number
