@@ -17,6 +17,8 @@ if filereadable(expand("~/.vimrc.bundles"))
 	source ~/.vimrc.bundles
 endif
 
+" Use the built in matchit plugin
+source $VIMRUNTIME/macros/matchit.vim
 
 " Syntax highlighting
 if ((has("win32") || has("win64")) && !has("gui_running"))
