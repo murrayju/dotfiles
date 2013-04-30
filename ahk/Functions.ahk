@@ -51,7 +51,10 @@ Console2Exe(command)
 Vim(file)
 {
 	global ProgFiles32
-	Run "%ProgFiles32%\vim\vim73\gvim.exe" "%file%"
+	found := RegExMatch(file, "\s*([ \w\\/:\+\$\.%\(\)\[\]\{\}]+)", matchedStr)
+	if (found != 0) {
+		Run "%ProgFiles32%\vim\vim73\gvim.exe" "%matchedStr1%"
+	}
 }
 
 ; GetSelectedText or FilePath in Windows Explorer
