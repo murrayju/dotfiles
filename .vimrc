@@ -7,9 +7,9 @@ if has("win32") || has("win64")
 	" Set the behavior for line endings
 	set fileformats=dos,unix,mac
 elseif has("mac")
-	set guifont=Envy\ Code\ R:h12
+	set guifont=Consolas:h12,Envy\ Code\ R:h12
 else
-	set guifont=Envy\ Code\ R\ 12
+	set guifont=Consolas:h12,Envy\ Code\ R\ 12
 endif
 
 " Vundle Bundles
@@ -98,10 +98,6 @@ set shiftwidth=4
 set smarttab
 set noexpandtab
 set autoindent
-
-" Show “invisible” characters
-" set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
-" set list
 
 " Highlight searches
 set hlsearch
