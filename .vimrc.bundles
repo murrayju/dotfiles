@@ -33,6 +33,10 @@ Bundle 'tpope/vim-markdown'
 " Surrounds (mostly for html)
 Bundle 'tpope/vim-surround'
 
+" Select entire file
+Bundle 'kana/vim-textobj-user'
+Bundle 'kana/vim-textobj-entire'
+
 " Status bar
 " Bundle 'Lokaltog/powerline'
 " set rtp+=~/.vim/bundle/powerline/bindings/vim
