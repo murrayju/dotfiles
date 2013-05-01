@@ -188,6 +188,9 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 inoremap jk <ESC>
 vnoremap jk <ESC>
 
+" Y should behave more like C and D
+map Y y$
+
 " Auto reload files (when not modified locally)
 set autoread
 
