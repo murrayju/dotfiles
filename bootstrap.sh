@@ -3,7 +3,7 @@ cd "$(dirname "${BASH_SOURCE}")"
 git pull
 git submodule update --init
 function doIt() {
-	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" -av . ~
+	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" --exclude "*.bat" -av . ~
 	vim -u .vimrc.bundles +BundleInstall! +BundleClean +qall
 }
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
