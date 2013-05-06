@@ -189,6 +189,8 @@ inoremap jk <ESC>
 vnoremap jk <ESC>
 " Clear search highlighting
 nnoremap jk :noh<CR><ESC>
+" Reduce the timeout so there isn't an annoying delay when using j
+set tm=100
 
 " Y should behave more like C and D
 map Y y$
