@@ -186,11 +186,11 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
 " Easier way to esc insert mode
 inoremap jk <ESC>
-vnoremap jk <ESC>
+
 " Clear search highlighting
-nnoremap jk :noh<CR><ESC>
+nnoremap \\ :noh<CR><ESC>
 " Reduce the timeout so there isn't an annoying delay when using j
-set tm=100
+set tm=500
 
 " Y should behave more like C and D
 map Y y$
