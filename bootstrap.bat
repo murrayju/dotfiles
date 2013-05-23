@@ -5,9 +5,12 @@ call git pull
 call git submodule update --init
 
 echo Copying Files
-xcopy .vim "%HOME%\.vim" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
-xcopy .vimrc "%HOME%" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
-xcopy .vimrc.bundles "%HOME%" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
+xcopy .vim "%USERPROFILE%\.vim" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
+xcopy .vimrc "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .vimrc.bundles "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .gitconfig "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .gitignore "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .gitattributes "%USERPROFILE%" /F /E /I /H /R /Y
 
 :: Vundle Vim Bundles
 call vundleUpdate.bat

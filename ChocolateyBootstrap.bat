@@ -40,30 +40,39 @@ call cinst 7zip.commandline
 call cinst freecommander
 
 :: browsers
-call cinst GoogleChrome
+call cinst GoogleChrome.Dev
 call cinst Firefox
 
-:: Install GnuWin32 apps
-call cinst GnuWin
+:: Console tools
+:: call cinst GnuWin
+call cinst cyg-get
 
 :: Sysinternals package
 call cinst sysinternals
 
 :: Dev tools
-call cinst git
+call cinst git.commandline
 call cinst tortoisegit
+call cinst hg
+call cinst tortoisehg
 call cinst vim
 call cinst notepadplusplus
 call cinst notepad2
-call cinst python
+call cinst python.x86
+call cinst easy.install
+call cinst pip
 call cinst dotPeek
 call cinst DotNet4.5
+call cinst java.jdk
+call cinst apache.ant
+call cinst NAnt
 call cinst wireshark
+call cinst fiddler4
 
 :: misc apps
+call cinst virtualbox
 call cinst filezilla
 call cinst launchy
-call cinst fiddler
 call cinst autohotkey_l
 call cinst putty
 call cinst VirtualCloneDrive
@@ -71,5 +80,6 @@ call cinst vlc
 call cinst windirstat
 call cinst winscp
 call cinst javaruntime
+call cinst stexbar
 
 pause
