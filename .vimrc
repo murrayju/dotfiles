@@ -22,13 +22,14 @@ source $VIMRUNTIME/macros/matchit.vim
 
 " Syntax highlighting
 if ((has("win32") || has("win64")) && !has("gui_running"))
-	color cmd
+	silent! color cmd
 	set background=light
 else
 	let g:molokai_original = 0
 	let g:rehash256 = 1
 	set t_Co=256
-	color molokai
+	silent! color desert
+	silent! color molokai
 	set background=dark
 endif
 syntax on
