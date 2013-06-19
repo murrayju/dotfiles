@@ -37,6 +37,12 @@ Bundle 'tpope/vim-surround'
 Bundle 'kana/vim-textobj-user'
 Bundle 'kana/vim-textobj-entire'
 
+" camelCase
+Bundle 'bkad/CamelCaseMotion'
+
+" toggle relative/absolute line numbers
+Bundle 'myusuf3/numbers.vim'
+
 " Status bar
 " Bundle 'Lokaltog/powerline'
 " set rtp+=~/.vim/bundle/powerline/bindings/vim
