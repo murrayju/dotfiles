@@ -18,8 +18,10 @@ Bundle 'Lokaltog/vim-easymotion'
 " Git gutter
 Bundle 'airblade/vim-gitgutter'
 
-" Molokai color scheme
+" color schemes
 Bundle 'tomasr/molokai'
+Bundle 'jnurmine/Zenburn'
+Bundle 'altercation/vim-colors-solarized'
 
 " TComment
 Bundle 'tomtom/tcomment_vim'

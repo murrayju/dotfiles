@@ -28,9 +28,10 @@ else
 	let g:molokai_original = 0
 	let g:rehash256 = 1
 	set t_Co=256
+	set background=dark
 	silent! color desert
 	silent! color molokai
-	set background=dark
+	silent! color solarized
 endif
 syntax on
 
@@ -118,11 +119,13 @@ set incsearch
 set laststatus=2
 
 " The status line
-hi User1 guifg=#eea040 guibg=#222222
-hi User2 guifg=#dd3333 guibg=#222222
-hi User3 guifg=#ff66ff guibg=#222222
-hi User4 guifg=#a0ee40 guibg=#222222
-hi User5 guifg=#eeee40 guibg=#222222
+" molokai bg=#222222
+" solarized bg=#073642
+hi User1 guifg=#eea040 guibg=#073642
+hi User2 guifg=#dd3333 guibg=#073642
+hi User3 guifg=#ff66ff guibg=#073642
+hi User4 guifg=#a0ee40 guibg=#073642
+hi User5 guifg=#eeee40 guibg=#073642
 set statusline=
 set statusline +=%1*\ %n\ %*            "buffer number
 set statusline +=%5*%{&ff}%*            "file format
