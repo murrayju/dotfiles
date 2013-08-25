@@ -28,10 +28,10 @@ else
 	let g:molokai_original = 0
 	let g:rehash256 = 1
 	set t_Co=256
-	set background=dark
 	silent! color desert
 	silent! color molokai
 	silent! color solarized
+	set background=dark
 endif
 syntax on
 
