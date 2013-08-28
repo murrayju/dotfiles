@@ -53,9 +53,9 @@ Vim(file)
 	global ProgFiles32
 	found := RegExMatch(file, "\s*([ \w\\/:\+\$\.%\(\)\[\]\{\}\-=#\^~!@&;,``']+)", matchedStr)
 	if (found != 0) {
-		IfExist, %ProgFiles32%\vim\vim74a\gvim.exe
+		IfExist, %ProgFiles32%\vim\vim74\gvim.exe
 		{
-			Run "%ProgFiles32%\vim\vim74a\gvim.exe" "%matchedStr1%"
+			Run "%ProgFiles32%\vim\vim74\gvim.exe" "%matchedStr1%"
 		}
 		else IfExist, %ProgFiles32%\vim\vim73\gvim.exe
 		{

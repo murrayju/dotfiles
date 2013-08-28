@@ -133,10 +133,10 @@ set statusline +=%3*%y%*                "file type
 set statusline +=%1*\ %{fugitive#statusline()}%*    "git branch
 set statusline +=%4*\ %<%F%*            "full path
 set statusline +=%2*%m%*                "modified flag
+set statusline +=%1*%{\"[\".(&fenc==\"\"?&enc:&fenc).((exists(\"+bomb\")\ &&\ &bomb)?\",B\":\"\").\"]\ \"}%*
 set statusline +=%1*%=%5l%*             "current line
 set statusline +=%2*/%L%*               "total lines
-set statusline +=%1*%4c%V\ %*             "virtual column number
-set statusline +=%2*0x%04B\ %*          "character under cursor
+set statusline +=%1*%4c%V\ %*           "virtual column number
 
 
 " Enable mouse in all modes
