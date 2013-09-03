@@ -162,12 +162,6 @@ set title
 " Show the (partial) command as it’s being typed
 set showcmd
 
-" Use relative line numbers
-" if exists("&relativenumber")
-" 	set relativenumber
-" 	au BufReadPost * set relativenumber
-" endif
-
 " Start scrolling three lines before the horizontal window border
 set scrolloff=3
 
@@ -193,12 +187,6 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR>
 
 " Easier way to esc insert mode
 inoremap jk <ESC>
-
-" Don't move around in insert mode
-inoremap <up> <nop>
-inoremap <down> <nop>
-inoremap <left> <nop>
-inoremap <right> <nop>
 
 " Clear search highlighting
 nnoremap \\ :noh<CR><ESC>
