@@ -11,9 +11,16 @@ xcopy .vimrc.bundles "%USERPROFILE%" /F /E /I /H /R /Y
 xcopy .gitconfig "%USERPROFILE%" /F /E /I /H /R /Y
 xcopy .gitignore "%USERPROFILE%" /F /E /I /H /R /Y
 xcopy .gitattributes "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .minttyrc "%USERPROFILE%" /F /E /I /H /R /Y
 
 :: Vundle Vim Bundles
 call vundleUpdate.bat
 
 :: AutoHotkey
 call ahkBootstrap.bat
+
+:: Run extra custom script
+set extra=%USERPROFILE%\extra.bat
+if exist "%extra%" (
+	call %extra%
+)
