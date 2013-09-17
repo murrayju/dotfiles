@@ -71,6 +71,7 @@ call cinst fiddler4
 
 :: misc apps
 call cinst virtualbox
+call cinst vagrant
 call cinst filezilla
 call cinst launchy
 call cinst autohotkey_l
@@ -80,6 +81,5 @@ call cinst vlc
 call cinst windirstat
 call cinst winscp
 call cinst javaruntime
-call cinst stexbar
 
 pause
