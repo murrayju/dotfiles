@@ -40,7 +40,7 @@ call cinst 7zip.commandline
 call cinst freecommander
 
 :: browsers
-call cinst GoogleChrome.Dev
+call cinst GoogleChrome
 call cinst Firefox
 
 :: Console tools

@@ -1,5 +1,7 @@
 @echo off
 
+pushd %~dp0
+
 :: AutoHotkey Launcher
 set ahk=%programfiles%\AutoHotkey\AutoHotkey.exe
 if not exist "%ahk%" (
@@ -10,3 +12,4 @@ if exist "%ahk%" (
 	:: Autorun entry in registry
 	reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v ahk_script /t REG_SZ /d "\"%ahk%\" \"%cd%\ahk\Main.ahk\"" /f
 )
+popd
