@@ -14,7 +14,7 @@ xcopy .gitattributes "%USERPROFILE%" /F /E /I /H /R /Y
 xcopy .minttyrc "%USERPROFILE%" /F /E /I /H /R /Y
 
 :: Vundle Vim Bundles
-::call vundleUpdate.bat
+call vundleUpdate.bat
 
 :: AutoHotkey
 call win\ahkBootstrap.bat
