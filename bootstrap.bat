@@ -1,17 +1,14 @@
 @echo off
 
+pushd %~dp0
+
 echo Gitting latest
 call git pull
 call git submodule update --init
 
 echo Copying Files
 xcopy .vim "%USERPROFILE%\.vim" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
-xcopy .vimrc "%USERPROFILE%" /F /E /I /H /R /Y
-xcopy .vimrc.bundles "%USERPROFILE%" /F /E /I /H /R /Y
-xcopy .gitconfig "%USERPROFILE%" /F /E /I /H /R /Y
-xcopy .gitignore "%USERPROFILE%" /F /E /I /H /R /Y
-xcopy .gitattributes "%USERPROFILE%" /F /E /I /H /R /Y
-xcopy .minttyrc "%USERPROFILE%" /F /E /I /H /R /Y
+xcopy .* "%USERPROFILE%" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
 
 :: Vundle Vim Bundles
 call vundleUpdate.bat
@@ -29,3 +26,5 @@ set extra=%USERPROFILE%\extra.bat
 if exist "%extra%" (
 	call %extra%
 )
+
+popd

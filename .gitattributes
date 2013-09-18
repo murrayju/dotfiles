@@ -6,6 +6,7 @@
 *.vim text eol=lf
 *.vimrc text eol=lf
 *.vimrc.bundles text eol=lf
+.* text eol=lf
 
 # Window specific files
 *.csproj text merge=union
