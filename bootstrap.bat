@@ -18,7 +18,7 @@ call win\ahkBootstrap.bat
 
 :: FreeCommander
 if not exist "%appdata%\FreeCommander\FreeCommander.ini" (
-	echo F | xcopy win\freecommander\FreeCommander.ini "%appdata%\FreeCommander\FreeCommander.ini" /F /E /I /H /R /Y
+	echo F | xcopy win\freecommander\* "%appdata%\FreeCommander\" /F /E /I /H /R /Y
 )
 
 :: Run extra custom script

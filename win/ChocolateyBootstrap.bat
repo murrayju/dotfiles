@@ -81,5 +81,6 @@ call cinst vlc
 call cinst windirstat
 call cinst winscp
 call cinst javaruntime
+call cinst hashcheck
 
 pause
