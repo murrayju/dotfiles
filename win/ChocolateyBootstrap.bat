@@ -45,7 +45,8 @@ call cinst Firefox
 
 :: Console tools
 :: call cinst GnuWin
-call cinst cyg-get
+:: call cinst cyg-get
+call cinst cygwin
 
 :: Sysinternals package
 call cinst sysinternals
@@ -55,6 +56,7 @@ call cinst git.commandline
 call cinst tortoisegit
 call cinst hg
 call cinst tortoisehg
+call cinst sourcetree
 call cinst vim
 call cinst notepadplusplus
 call cinst notepad2
