@@ -10,7 +10,7 @@ done
 unset file
 
 # Load dircolors
-eval `dircolors ~/.dir_colors`
+command -v dircolors >/dev/null 2>&1 && { eval `dircolors ~/.dir_colors`; }
 
 # Case-insensitive globbing (used in pathname expansion)
 shopt -s nocaseglob
