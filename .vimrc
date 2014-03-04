@@ -2,7 +2,7 @@ set nocompatible               " be iMproved
 
 " Some environment based settings
 if has("win32") || has("win64")
-	set guifont=Consolas:h11
+	set guifont=Consolas:h10
 	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
 	" Set the behavior for line endings
 	set fileformats=dos,unix,mac
@@ -30,7 +30,7 @@ else
 	set t_Co=256
 	silent! color desert
 	silent! color molokai
-	silent! color solarized
+	" silent! color solarized
 	set background=dark
 endif
 syntax on
@@ -106,14 +106,21 @@ set noexpandtab
 set autoindent
 
 " Highlight searches
-set hlsearch
+" set hlsearch
 
 " Ignore case of searches
 set ignorecase
 set smartcase
+let g:EasyMotion_smartcase = 1
 
 " Highlight dynamically as pattern is typed
 set incsearch
+
+" EasyMotion style searching
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
 
 " Always show status line
 set laststatus=2
@@ -121,11 +128,11 @@ set laststatus=2
 " The status line
 " molokai bg=#222222
 " solarized bg=#073642
-hi User1 guifg=#eea040 guibg=#073642
-hi User2 guifg=#dd3333 guibg=#073642
-hi User3 guifg=#ff66ff guibg=#073642
-hi User4 guifg=#a0ee40 guibg=#073642
-hi User5 guifg=#eeee40 guibg=#073642
+hi User1 guifg=#eea040 guibg=#222222
+hi User2 guifg=#dd3333 guibg=#222222
+hi User3 guifg=#ff66ff guibg=#222222
+hi User4 guifg=#a0ee40 guibg=#222222
+hi User5 guifg=#eeee40 guibg=#222222
 set statusline=
 set statusline +=%1*\ %n\ %*            "buffer number
 set statusline +=%5*%{&ff}%*            "file format
@@ -212,6 +219,9 @@ nmap <leader>l :set list!<CR>
 " Pressing F5 lists all buffers, just type number
 map <F5> :ls<CR>:e #
 
+" NERDTree
+map <C-n> :NERDTreeToggle<CR>
+
 " Tell vim to remember certain things when we exit
 "  '10  :  marks will be remembered for up to 10 previously edited files
 "  "100 :  will save up to 100 lines for each register
@@ -235,6 +245,7 @@ if has("autocmd")
 	" Treat .json files as .js
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 	autocmd BufNewFile,BufRead *.hta setfiletype html syntax=html
+	autocmd BufNewFile,BufRead *.cshtml setfiletype html syntax=html
 
 	" Add support for custom highlighting
 	autocmd BufNewFile,BufRead *.pgm set syn=pgm

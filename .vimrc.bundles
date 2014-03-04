@@ -7,13 +7,20 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " color schemes
-" Bundle 'tomasr/molokai'
+Bundle 'tomasr/molokai'
 " Bundle 'jnurmine/Zenburn'
-Bundle 'altercation/vim-colors-solarized'
+" Bundle 'altercation/vim-colors-solarized'
 
-" Syntax
+" Syntax Coloring
 Bundle 'tpope/vim-markdown'
 Bundle 'repos-scala/scala-vundle'
+Bundle 'groenewege/vim-less'
+Bundle 'pangloss/vim-javascript'
+" Syntax Checking
+Bundle 'scrooloose/syntastic'
+
+" Project tree
+Bundle 'scrooloose/nerdtree'
 
 " Git extensions
 Bundle 'tpope/vim-git'
