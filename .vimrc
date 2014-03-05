@@ -122,6 +122,14 @@ omap / <Plug>(easymotion-tn)
 map  n <Plug>(easymotion-next)
 map  N <Plug>(easymotion-prev)
 
+" Enable syntax folding
+set foldmethod=syntax
+set foldlevelstart=99
+let javaScript_fold=1         " JavaScript
+let php_folding=1             " PHP
+let sh_fold_enabled=1         " sh
+let xml_syntax_folding=1      " XML
+
 " Always show status line
 set laststatus=2
 
@@ -246,6 +254,9 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
 	autocmd BufNewFile,BufRead *.hta setfiletype html syntax=html
 	autocmd BufNewFile,BufRead *.cshtml setfiletype html syntax=html
+
+	" Javascript should use spaces, not tabs
+	autocmd FileType javascript setlocal ts=4 sts=4 sw=4 et
 
 	" Add support for custom highlighting
 	autocmd BufNewFile,BufRead *.pgm set syn=pgm
