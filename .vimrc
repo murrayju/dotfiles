@@ -117,10 +117,10 @@ let g:EasyMotion_smartcase = 1
 set incsearch
 
 " EasyMotion style searching
-map  / <Plug>(easymotion-sn)
-omap / <Plug>(easymotion-tn)
-map  n <Plug>(easymotion-next)
-map  N <Plug>(easymotion-prev)
+map  ? <Plug>(easymotion-sn)
+omap ? <Plug>(easymotion-tn)
+" map  n <Plug>(easymotion-next)
+" map  N <Plug>(easymotion-prev)
 
 " Enable syntax folding
 set foldmethod=syntax
