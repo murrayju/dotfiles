@@ -263,10 +263,9 @@ if has("autocmd")
 	autocmd BufNewFile,BufRead *.g set syn=antlr3
 
 	" Add support for source code formatting
-	autocmd BufNewFile,BufRead *.cpp set formatprg=astyle\ -t4pbSYM60m0HjOok3U
-	autocmd BufNewFile,BufRead *.c set formatprg=astyle\ -t4pbSYM60m0HjOok3U
-	autocmd BufNewFile,BufRead *.h set formatprg=astyle\ -t4pbSYM60m0HjOok3U
-	autocmd BufNewFile,BufRead *.xml set formatprg=xmllint\ --format\ -
+	autocmd FileType {cpp,c,h} set formatprg=astyle\ -t4pbSYM60m0HjOok3U
+	autocmd FileType xml set formatprg=xmllint\ --format\ -
+	autocmd FileType {js,json} set formatprg=js-beautify\ -j\ -f\ -
 
 	augroup resCur
 		autocmd!
