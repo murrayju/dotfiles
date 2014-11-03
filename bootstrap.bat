@@ -3,7 +3,7 @@
 pushd %~dp0
 
 echo Gitting latest
-call git pull
+call git pull origin master
 call git submodule update --init
 
 echo Copying Files

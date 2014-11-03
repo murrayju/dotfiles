@@ -57,6 +57,12 @@ Bundle 'msanders/snipmate.vim'
 " Status bar
 " Bundle 'bling/vim-airline'
 
+" Searching
+Bundle 'dkprice/vim-easygrep'
+
+" EditorConfig.org whitespace
+Bundle 'editorconfig/editorconfig-vim'
+
 
 " Required: last
 filetype plugin indent on
