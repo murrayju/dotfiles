@@ -54,6 +54,9 @@ Bundle 'kien/ctrlp.vim'
 " templating
 Bundle 'msanders/snipmate.vim'
 
+" autocomplete
+Bundle 'Shougo/neocomplcache.vim'
+
 " Status bar
 " Bundle 'bling/vim-airline'
 

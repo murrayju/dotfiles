@@ -244,6 +244,9 @@ function! ResCur()
 	endif
 endfunction
 
+" autocomplete
+let g:neocomplcache_enable_at_startup = 1
+
 " Automatic commands
 if has("autocmd")
 
