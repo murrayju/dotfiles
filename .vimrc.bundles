@@ -1,80 +1,81 @@
 set nocompatible               " be iMproved
 filetype off                   " required!
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Required: let Vundle manage Vundle
-Bundle 'gmarik/vundle'
+Plugin 'gmarik/vundle'
 
 " color schemes
-Bundle 'tomasr/molokai'
-" Bundle 'jnurmine/Zenburn'
-" Bundle 'altercation/vim-colors-solarized'
+Plugin 'tomasr/molokai'
+" Plugin 'jnurmine/Zenburn'
+" Plugin 'altercation/vim-colors-solarized'
 
 " Syntax Coloring
-Bundle 'tpope/vim-markdown'
-Bundle 'repos-scala/scala-vundle'
-Bundle 'groenewege/vim-less'
-Bundle 'pangloss/vim-javascript'
+Plugin 'tpope/vim-markdown'
+Plugin 'repos-scala/scala-vundle'
+Plugin 'groenewege/vim-less'
+Plugin 'pangloss/vim-javascript'
+Plugin "ekalinin/Dockerfile.vim"
 " Syntax Checking
-Bundle 'scrooloose/syntastic'
+Plugin 'scrooloose/syntastic'
 
 " Project tree
-Bundle 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdtree'
 
 " Git extensions
-Bundle 'tpope/vim-git'
-Bundle 'tpope/vim-fugitive'
-" Bundle 'airblade/vim-gitgutter'
-" Bundle 'akiomik/git-gutter-vim'
+Plugin 'tpope/vim-git'
+Plugin 'tpope/vim-fugitive'
+" Plugin 'airblade/vim-gitgutter'
+" Plugin 'akiomik/git-gutter-vim'
 
 " Better motion
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'bkad/CamelCaseMotion'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'bkad/CamelCaseMotion'
 
 " TComment
-Bundle 'tomtom/tcomment_vim'
+Plugin 'tomtom/tcomment_vim'
 
 " Unimpaired
-Bundle 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-unimpaired'
 
 " Surrounds (mostly for html)
-Bundle 'tpope/vim-surround'
+Plugin 'tpope/vim-surround'
 
 " Select entire file
-Bundle 'kana/vim-textobj-user'
-Bundle 'kana/vim-textobj-entire'
+Plugin 'kana/vim-textobj-user'
+Plugin 'kana/vim-textobj-entire'
 
 " toggle relative/absolute line numbers
-Bundle 'myusuf3/numbers.vim'
+Plugin 'myusuf3/numbers.vim'
 
 " Quick find files
-Bundle 'kien/ctrlp.vim'
+Plugin 'kien/ctrlp.vim'
 
 " templating
-Bundle 'msanders/snipmate.vim'
+Plugin 'msanders/snipmate.vim'
 
 " autocomplete
-Bundle 'Shougo/neocomplcache.vim'
+Plugin 'Shougo/neocomplcache.vim'
 
 " Status bar
-" Bundle 'bling/vim-airline'
+" Plugin 'bling/vim-airline'
 
 " Searching
-Bundle 'dkprice/vim-easygrep'
+Plugin 'dkprice/vim-easygrep'
 
 " EditorConfig.org whitespace
-Bundle 'editorconfig/editorconfig-vim'
+Plugin 'editorconfig/editorconfig-vim'
 
 
+call vundle#end()
 " Required: last
 filetype plugin indent on
 "
 " Brief help
-" :BundleList          - list configured bundles
-" :BundleInstall(!)    - install(update) bundles
-" :BundleSearch(!) foo - search(or refresh cache first) for foo
-" :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
+" :PluginList          - list configured bundles
+" :PluginInstall(!)    - install(update) bundles
+" :PluginSearch(!) foo - search(or refresh cache first) for foo
+" :PluginClean(!)      - confirm(or auto-approve) removal of unused bundles
 "
 " see :h vundle for more details or wiki for FAQ
-" NOTE: comments after Bundle command are not allowed..

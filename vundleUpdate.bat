@@ -9,13 +9,13 @@ if not exist %vimpath% (
 	exit
 )
 
-:: Vundle Bundle install
+:: Vundle Plugin install
 set vimexe=%vimpath%\vim74\gvim.exe
 if not exist %vimexe% (
 	set vimexe=%vimpath%\vim73\gvim.exe
 )
 if exist %vimexe% (
-	call %vimexe% -u .vimrc +BundleInstall! +BundleClean +qall
+	call %vimexe% -u .vimrc +PluginInstall! +PluginClean +qall
 )
 
 :: Non-vundle bundles
