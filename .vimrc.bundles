@@ -1,6 +1,6 @@
 set nocompatible               " be iMproved
 filetype off                   " required!
-set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/vundle
 call vundle#begin()
 
 " Required: let Vundle manage Vundle
@@ -16,7 +16,7 @@ Plugin 'tpope/vim-markdown'
 Plugin 'repos-scala/scala-vundle'
 Plugin 'groenewege/vim-less'
 Plugin 'pangloss/vim-javascript'
-Plugin "ekalinin/Dockerfile.vim"
+Plugin 'ekalinin/Dockerfile.vim'
 " Syntax Checking
 Plugin 'scrooloose/syntastic'
 
