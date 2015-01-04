@@ -9,7 +9,7 @@ if has("win32") || has("win64")
 elseif has("mac")
 	set guifont=Consolas:h12,Envy\ Code\ R:h12
 else
-	set guifont=Consolas:h12,Envy\ Code\ R\ 12
+	set guifont=Droid\ Sans\ Mono\ 11,Ubuntu\ Mono\ 11
 endif
 
 " Vundle Bundles
