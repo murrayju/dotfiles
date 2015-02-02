@@ -48,19 +48,30 @@ Console2Exe(command)
 	Run C:\Program Files\Console2\Console.exe -r "/k %command%"
 }
 
-Vim(file)
-{
+Vim(args = false) {
 	global ProgFiles32
+	IfExist, %ProgFiles32%\vim\vim74\gvim.exe
+	{
+		if args {
+			Run "%ProgFiles32%\vim\vim74\gvim.exe" "%args%"
+		} else { 
+			Run "%ProgFiles32%\vim\vim74\gvim.exe"
+		}
+	}
+	else IfExist, %ProgFiles32%\vim\vim73\gvim.exe
+	{
+		if args {
+			Run "%ProgFiles32%\vim\vim73\gvim.exe" "%args%"
+		} else { 
+			Run "%ProgFiles32%\vim\vim73\gvim.exe"
+		}
+	}
+}
+
+VimFile(file) {
 	found := RegExMatch(file, "\s*([ \w\\/:\+\$\.%\(\)\[\]\{\}\-=#\^~!@&;,``']+)", matchedStr)
 	if (found != 0) {
-		IfExist, %ProgFiles32%\vim\vim74\gvim.exe
-		{
-			Run "%ProgFiles32%\vim\vim74\gvim.exe" "%matchedStr1%"
-		}
-		else IfExist, %ProgFiles32%\vim\vim73\gvim.exe
-		{
-			Run  "%ProgFiles32%\vim\vim73\gvim.exe" "%matchedStr1%"
-		}
+		Vim(matchedStr1)
 	}
 }
 

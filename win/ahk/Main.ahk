@@ -15,7 +15,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #Include %A_ScriptDir%\Functions.ahk
 
 ; Make CAPSLOCK just behave like SHIFT
-CapsLock::Shift
+CapsLock::Esc
 
 ; Open any selected text (or file in explorer) as a path in gVim
-F4::Vim(GetSelectedText())
+F4::VimFile(GetSelectedText())
+#v::Vim()
