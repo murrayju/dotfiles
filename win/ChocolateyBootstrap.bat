@@ -40,49 +40,54 @@ call cinst 7zip.commandline
 call cinst freecommander
 
 :: browsers
-call cinst GoogleChrome
+:: call cinst GoogleChrome
+call cinst google-chrome-x64
 call cinst Firefox
 
 :: Console tools
 :: call cinst GnuWin
 :: call cinst cyg-get
 call cinst cygwin
+call cinst conemu
 
 :: Sysinternals package
 call cinst sysinternals
 
 :: Dev tools
-call cinst git.commandline
-call cinst tortoisegit
+call cinst git
 call cinst hg
-call cinst tortoisehg
+:: call cinst tortoisegit
+:: call cinst tortoisehg
 call cinst sourcetree
 call cinst vim
+call cinst editorconfig.core
 call cinst notepadplusplus
 call cinst notepad2
+call cinst nodejs
 call cinst python.x86
 call cinst easy.install
 call cinst pip
 call cinst dotPeek
-call cinst DotNet4.5
-call cinst java.jdk
+call cinst DotNet4.5.1
+call cinst jdk8 -params "both=true"
 call cinst apache.ant
 call cinst NAnt
 call cinst wireshark
 call cinst fiddler4
+call cinst wget
+call cinst curl
 
 :: misc apps
 call cinst virtualbox
 call cinst vagrant
 call cinst filezilla
 call cinst launchy
-call cinst autohotkey_l
+call cinst autohotkey
 call cinst putty
 call cinst VirtualCloneDrive
 call cinst vlc
 call cinst windirstat
 call cinst winscp
-call cinst javaruntime
 call cinst hashcheck
 
 pause
