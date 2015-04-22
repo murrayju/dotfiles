@@ -27,7 +27,7 @@ setlocal & pushd .
 
 :: Update Chocolatey if it is installed
 echo Updating Chocolatey...
-call cup
+call choco update -y
 if %errorlevel%==0 goto noInst
 :: Install Chocolatey if it is missing
 echo Chocolatey not yet installed, installing...
@@ -35,59 +35,68 @@ echo Chocolatey not yet installed, installing...
 :noInst
 
 :: basic apps
-call cinst 7zip
-call cinst 7zip.commandline
-call cinst freecommander
+call choco install -y 7zip
+call choco install -y 7zip.commandline
+call choco install -y freecommander
 
 :: browsers
-:: call cinst GoogleChrome
-call cinst google-chrome-x64
-call cinst Firefox
+:: call choco install -y GoogleChrome
+call choco install -y google-chrome-x64
+call choco install -y Firefox
 
 :: Console tools
-:: call cinst GnuWin
-:: call cinst cyg-get
-call cinst cygwin
-call cinst conemu
+:: call choco install -y GnuWin
+:: call choco install -y cyg-get
+call choco install -y cygwin
+call choco install -y conemu
 
 :: Sysinternals package
-call cinst sysinternals
+call choco install -y sysinternals
 
 :: Dev tools
-call cinst git
-call cinst hg
-:: call cinst tortoisegit
-:: call cinst tortoisehg
-call cinst sourcetree
-call cinst vim
-call cinst editorconfig.core
-call cinst notepadplusplus
-call cinst notepad2
-call cinst nodejs
-call cinst python.x86
-call cinst easy.install
-call cinst pip
-call cinst dotPeek
-call cinst DotNet4.5.1
-call cinst jdk8 -params "both=true"
-call cinst apache.ant
-call cinst NAnt
-call cinst wireshark
-call cinst fiddler4
-call cinst wget
-call cinst curl
+call choco install -y git
+call choco install -y hg
+:: call choco install -y tortoisegit
+:: call choco install -y tortoisehg
+call choco install -y sourcetree
+call choco install -y vim
+call choco install -y editorconfig.core
+call choco install -y notepadplusplus
+call choco install -y notepad2
+call choco install -y nodejs
+call choco install -y python2
+call choco install -y python3
+call choco install -y easy.install
+call choco install -y pip
+call choco install -y dotPeek
+call choco install -y DotNet3.5
+call choco install -y DotNet4.0
+call choco install -y DotNet4.5.2
+call choco install -y jdk7
+call choco install -y jdk8 -params "both=true"
+call choco install -y apache.ant
+call choco install -y NAnt
+call choco install -y wireshark
+call choco install -y fiddler4
+call choco install -y wget
+call choco install -y curl
+call choco install -y kdiff3
+call choco install -y dependencywalker
 
 :: misc apps
-call cinst virtualbox
-call cinst vagrant
-call cinst filezilla
-call cinst launchy
-call cinst autohotkey
-call cinst putty
-call cinst VirtualCloneDrive
-call cinst vlc
-call cinst windirstat
-call cinst winscp
-call cinst hashcheck
+call choco install -y virtualbox
+call choco install -y boot2docker
+call choco install -y vagrant
+call choco install -y filezilla
+call choco install -y launchy
+call choco install -y autohotkey
+call choco install -y putty
+call choco install -y VirtualCloneDrive
+call choco install -y vlc
+call choco install -y windirstat
+call choco install -y winscp
+call choco install -y hashcheck
+call choco install -y foxitreader
+call choco install -y keepass
 
 pause
