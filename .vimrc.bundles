@@ -12,6 +12,7 @@ Plugin 'tomasr/molokai'
 " Plugin 'altercation/vim-colors-solarized'
 
 " Syntax Coloring
+Plugin 'kchmck/vim-coffee-script'
 Plugin 'tpope/vim-markdown'
 Plugin 'repos-scala/scala-vundle'
 Plugin 'groenewege/vim-less'
