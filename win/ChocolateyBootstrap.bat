@@ -27,7 +27,7 @@ setlocal & pushd .
 
 :: Update Chocolatey if it is installed
 echo Updating Chocolatey...
-call choco update -y
+call choco upgrade -y chocolatey
 if %errorlevel%==0 goto noInst
 :: Install Chocolatey if it is missing
 echo Chocolatey not yet installed, installing...
@@ -40,14 +40,14 @@ call choco install -y 7zip.commandline
 call choco install -y freecommander
 
 :: browsers
-:: call choco install -y GoogleChrome
-call choco install -y google-chrome-x64
+call choco install -y googlechrome
+call choco install -y chromium
 call choco install -y Firefox
 
 :: Console tools
-:: call choco install -y GnuWin
 :: call choco install -y cyg-get
 call choco install -y cygwin
+call choco install -y babun
 call choco install -y conemu
 
 :: Sysinternals package
@@ -56,16 +56,20 @@ call choco install -y sysinternals
 :: Dev tools
 call choco install -y git
 call choco install -y hg
-:: call choco install -y tortoisegit
-:: call choco install -y tortoisehg
-call choco install -y sourcetree
+call choco install -y tortoisegit
+call choco install -y tortoisehg
+:: call choco install -y sourcetree
 call choco install -y vim
 call choco install -y editorconfig.core
+call choco install -y atom
+call choco install -y brackets
+call choco install -y visualstudiocode
+call choco install -y sublimetext3
 call choco install -y notepadplusplus
 call choco install -y notepad2
 call choco install -y nodejs
-call choco install -y python2
 call choco install -y python3
+call choco install -y python2
 call choco install -y easy.install
 call choco install -y pip
 call choco install -y dotPeek
@@ -85,6 +89,9 @@ call choco install -y dependencywalker
 
 :: misc apps
 call choco install -y virtualbox
+call choco install -y virtualbox.extensionpack
+call choco install -y vmwareplayer
+call choco install -y vmwarevsphereclient
 call choco install -y boot2docker
 call choco install -y vagrant
 call choco install -y filezilla
@@ -98,5 +105,6 @@ call choco install -y winscp
 call choco install -y hashcheck
 call choco install -y foxitreader
 call choco install -y keepass
+call choco install -y gimp
 
 pause
