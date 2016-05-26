@@ -270,6 +270,7 @@ if has("autocmd")
 
 	" Javascript should use spaces, not tabs
 	autocmd FileType javascript setlocal ts=4 sts=4 sw=4 et
+	autocmd FileType coffee setlocal ts=2 sts=2 sw=2 et
 
 	" Add support for custom highlighting
 	autocmd BufNewFile,BufRead *.pgm set syn=pgm
