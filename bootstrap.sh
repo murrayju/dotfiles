@@ -16,4 +16,4 @@ else
 	fi
 fi
 unset doIt
-source ~/.bashrc
+source ~/.bashrc || true
