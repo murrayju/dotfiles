@@ -15,8 +15,5 @@ if not exist %vimexe% (
 	set vimexe=%vimpath%\vim73\gvim.exe
 )
 if exist %vimexe% (
-	call %vimexe% -u .vimrc +PluginInstall! +PluginClean +qall
+	call %vimexe% -c "call dein#install()" +qall
 )
-
-:: Non-vundle bundles
-rem hg clone https://bitbucket.org/ludovicchabant/vim-lawrencium "%USERPROFILE%\.vim\bundle\vim-lawrencium"

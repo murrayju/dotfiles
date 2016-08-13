@@ -4,7 +4,6 @@ pushd %~dp0
 
 echo Gitting latest
 call git pull origin master
-call git submodule update --init
 
 echo Copying Files
 xcopy .vim "%USERPROFILE%\.vim" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore

@@ -1,4 +1,90 @@
-set nocompatible               " be iMproved
+if &compatible
+  set nocompatible               " Be iMproved
+endif
+
+set runtimepath^=~/.vim/repos/github.com/Shougo/dein.vim
+
+call dein#begin('~/.vim')
+
+" Let dein manage dein
+call dein#add('Shougo/dein.vim')
+
+" color schemes
+call dein#add('tomasr/molokai')
+" call dein#add('jnurmine/Zenburn')
+" call dein#add('altercation/vim-colors-solarized')
+
+" Syntax Coloring
+call dein#add('kchmck/vim-coffee-script')
+call dein#add('tpope/vim-markdown')
+call dein#add('repos-scala/scala-vundle')
+call dein#add('groenewege/vim-less')
+call dein#add('pangloss/vim-javascript')
+call dein#add('ekalinin/Dockerfile.vim')
+call dein#add('leafgarland/typescript-vim')
+call dein#add('HerringtonDarkholme/yats.vim') " Typescript
+call dein#add('jason0x43/vim-js-indent')
+" call dein#add('Quramy/tsuquyomi')
+" Syntax Checking
+call dein#add('scrooloose/syntastic')
+" call dein#add('vim-scripts/SyntaxComplete')
+" call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
+
+" Project tree
+call dein#add('scrooloose/nerdtree')
+
+" Git extensions
+call dein#add('tpope/vim-git')
+call dein#add('tpope/vim-fugitive')
+" call dein#add('airblade/vim-gitgutter')
+" call dein#add('akiomik/git-gutter-vim')
+
+" Better motion
+call dein#add('Lokaltog/vim-easymotion')
+call dein#add('bkad/CamelCaseMotion')
+
+" TComment
+call dein#add('tomtom/tcomment_vim')
+
+" Unimpaired
+call dein#add('tpope/vim-unimpaired')
+
+" Surrounds (mostly for html)
+call dein#add('tpope/vim-surround')
+
+" Select entire file
+call dein#add('kana/vim-textobj-user')
+call dein#add('kana/vim-textobj-entire')
+
+" toggle relative/absolute line numbers
+call dein#add('myusuf3/numbers.vim')
+
+" Quick find files
+call dein#add('kien/ctrlp.vim')
+
+" templating
+call dein#add('msanders/snipmate.vim')
+
+" autocomplete
+call dein#add('Shougo/neocomplcache.vim')
+
+" Status bar
+" call dein#add('bling/vim-airline')
+
+" Searching
+call dein#add('dkprice/vim-easygrep')
+
+" EditorConfig.org whitespace
+call dein#add('editorconfig/editorconfig-vim')
+
+call dein#end()
+
+filetype plugin indent on
+
+" If you want to install not installed plugins on startup.
+if dein#check_install()
+  call dein#install()
+endif
 
 " Some environment based settings
 if has("win32") || has("win64")
@@ -10,11 +96,6 @@ elseif has("mac")
 	set guifont=Consolas:h12,Envy\ Code\ R:h12
 else
 	set guifont=Droid\ Sans\ Mono\ 11,Ubuntu\ Mono\ 11
-endif
-
-" Vundle Bundles
-if filereadable(expand("~/.vimrc.bundles"))
-	source ~/.vimrc.bundles
 endif
 
 " Use the built in matchit plugin

@@ -1,10 +1,10 @@
 #!/bin/bash
 cd "$(dirname "${BASH_SOURCE}")"
-git pull
-git submodule update --init
+git pull origin master
 function doIt() {
 	rsync --exclude ".git/" --exclude ".DS_Store" --exclude "bootstrap.sh" --exclude "README.md" --exclude "win/" --exclude "*.bat" -av . ~
-	vim -u .vimrc.bundles +PluginInstall! +PluginClean +qall
+	curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.vim/
+	vim -c "call dein#install()" +qall
 }
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
 	doIt
