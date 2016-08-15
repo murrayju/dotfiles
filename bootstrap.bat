@@ -9,8 +9,37 @@ echo Copying Files
 xcopy .vim "%USERPROFILE%\.vim" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
 xcopy .* "%USERPROFILE%" /F /E /I /H /R /Y /EXCLUDE:.xcopyignore
 
-:: Vundle Vim Bundles
-call vundleUpdate.bat
+:: Install Vim plugins
+set plugindir="%USERPROFILE%\.vim\repos\github.com\Shougo\dein.vim"
+if not exist "%plugindir%" (
+	mkdir "%plugindir%"
+	git clone https://github.com/Shougo/dein.vim "%plugindir%"
+)
+set vimroot="%ProgramFiles%"\vim
+if not exist %vimroot% (
+	set vimroot="%ProgramFiles(x86)%"\vim
+)
+if not exist %vimroot% (
+	echo "Vim is not installed"
+	goto novim
+)
+set vimpath=%vimroot%\vim74
+if not exist %vimpath% (
+	set vimpath=%vimroot%\vim73
+)
+if not exist %vimpath% (
+	echo "Vim is not installed"
+	goto novim
+)
+set vimexe=%vimpath%\vim.exe
+if not exist %vimexe% (
+	echo "Vim is not installed"
+	goto novim
+)
+
+call %vimexe% -c "call dein#install()" +qall
+
+:novim
 
 :: AutoHotkey
 call win\ahkBootstrap.bat

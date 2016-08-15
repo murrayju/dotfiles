@@ -2,6 +2,18 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
+" Some environment based settings
+if has("win32") || has("win64")
+	set guifont=Consolas:h10
+	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
+	" Set the behavior for line endings
+	set fileformats=dos,unix,mac
+elseif has("mac")
+	set guifont=Consolas:h12,Envy\ Code\ R:h12
+else
+	set guifont=Droid\ Sans\ Mono\ 11,Ubuntu\ Mono\ 11
+endif
+
 set runtimepath^=~/.vim/repos/github.com/Shougo/dein.vim
 
 call dein#begin('~/.vim')
@@ -84,18 +96,6 @@ filetype plugin indent on
 " If you want to install not installed plugins on startup.
 if dein#check_install()
   call dein#install()
-endif
-
-" Some environment based settings
-if has("win32") || has("win64")
-	set guifont=Consolas:h10
-	set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
-	" Set the behavior for line endings
-	set fileformats=dos,unix,mac
-elseif has("mac")
-	set guifont=Consolas:h12,Envy\ Code\ R:h12
-else
-	set guifont=Droid\ Sans\ Mono\ 11,Ubuntu\ Mono\ 11
 endif
 
 " Use the built in matchit plugin
