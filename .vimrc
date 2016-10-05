@@ -72,7 +72,7 @@ call dein#add('kana/vim-textobj-entire')
 call dein#add('myusuf3/numbers.vim')
 
 " Quick find files
-call dein#add('kien/ctrlp.vim')
+call dein#add('ctrlpvim/ctrlp.vim')
 
 " templating
 call dein#add('msanders/snipmate.vim')
