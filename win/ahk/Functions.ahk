@@ -48,22 +48,27 @@ Console2Exe(command)
 	Run C:\Program Files\Console2\Console.exe -r "/k %command%"
 }
 
-Vim(args = false) {
-	global ProgFiles32
-	IfExist, %ProgFiles32%\vim\vim74\gvim.exe
+RunIfExists(exe, args := false)
+{
+	if FileExist(exe)
 	{
 		if args {
-			Run "%ProgFiles32%\vim\vim74\gvim.exe" "%args%"
+			Run "%exe%" "%args%"
 		} else { 
-			Run "%ProgFiles32%\vim\vim74\gvim.exe"
+			Run "%exe%"
 		}
+		Return true
 	}
-	else IfExist, %ProgFiles32%\vim\vim73\gvim.exe
-	{
-		if args {
-			Run "%ProgFiles32%\vim\vim73\gvim.exe" "%args%"
-		} else { 
-			Run "%ProgFiles32%\vim\vim73\gvim.exe"
+	Return false
+}
+
+Vim(args := false) {
+	global ProgFiles32
+	vim8 := RunIfExists(ProgFiles32 . "\vim\vim80\gvim.exe", args)
+	if !vim8 {
+		vim74 := RunIfExists(ProgFiles32 . "\vim\vim74\gvim.exe", args)
+		if !vim74 {
+			vim73 := RunIfExists(ProgFiles32 . "\vim\vim73\gvim.exe", args)
 		}
 	}
 }
