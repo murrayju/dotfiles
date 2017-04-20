@@ -23,6 +23,7 @@ call dein#add('Shougo/dein.vim')
 
 " color schemes
 call dein#add('tomasr/molokai')
+call dein#add('dracula/vim')
 " call dein#add('jnurmine/Zenburn')
 " call dein#add('altercation/vim-colors-solarized')
 
@@ -111,6 +112,7 @@ else
 	set t_Co=256
 	silent! color desert
 	silent! color molokai
+	silent! color dracula
 	" silent! color solarized
 	set background=dark
 endif
