@@ -1,22 +1,22 @@
-# Automatically normalize line endings for all text-based files
-* text=auto
-
-# Linux specific files
-*.sh text eol=lf
-*.vim text eol=lf
-*.vimrc text eol=lf
-*.vimrc.bundles text eol=lf
-.* text eol=lf
-
-# Window specific files
-*.csproj text merge=union
-*.sln text merge=union eol=crlf
-*.bat text eol=crlf
-
-# Code file types
-*.cs     text diff=csharp
-*.java   text diff=java
-*.html   text diff=html
-*.css    text
-*.js     text
-*.sql    text
+# # Automatically normalize line endings for all text-based files
+# * text=auto
+#
+# # Linux specific files
+# *.sh text eol=lf
+# *.vim text eol=lf
+# *.vimrc text eol=lf
+# *.vimrc.bundles text eol=lf
+# .* text eol=lf
+#
+# # Window specific files
+# *.csproj text merge=union
+# *.sln text merge=union eol=crlf
+# *.bat text eol=crlf
+#
+# # Code file types
+# *.cs     text diff=csharp
+# *.java   text diff=java
+# *.html   text diff=html
+# *.css    text
+# *.js     text
+# *.sql    text
