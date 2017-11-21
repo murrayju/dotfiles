@@ -16,81 +16,86 @@ endif
 
 set runtimepath^=~/.vim/repos/github.com/Shougo/dein.vim
 
-call dein#begin('~/.vim')
+if dein#load_state('~/.vim/')
+	call dein#begin('~/.vim')
 
-" Let dein manage dein
-call dein#add('Shougo/dein.vim')
+	" Let dein manage dein
+	call dein#add('Shougo/dein.vim')
 
-" color schemes
-call dein#add('tomasr/molokai')
-call dein#add('dracula/vim')
-" call dein#add('jnurmine/Zenburn')
-" call dein#add('altercation/vim-colors-solarized')
+	" color schemes
+	call dein#add('tomasr/molokai')
+	call dein#add('dracula/vim')
+	" call dein#add('jnurmine/Zenburn')
+	" call dein#add('altercation/vim-colors-solarized')
 
-" Syntax Coloring
-call dein#add('kchmck/vim-coffee-script')
-call dein#add('tpope/vim-markdown')
-call dein#add('repos-scala/scala-vundle')
-call dein#add('groenewege/vim-less')
-call dein#add('pangloss/vim-javascript')
-call dein#add('ekalinin/Dockerfile.vim')
-call dein#add('leafgarland/typescript-vim')
-call dein#add('HerringtonDarkholme/yats.vim') " Typescript
-call dein#add('jason0x43/vim-js-indent')
-" call dein#add('Quramy/tsuquyomi')
-" Syntax Checking
-call dein#add('scrooloose/syntastic')
-" call dein#add('vim-scripts/SyntaxComplete')
-" call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
+	" Syntax Coloring
+	call dein#add('kchmck/vim-coffee-script')
+	call dein#add('tpope/vim-markdown')
+	call dein#add('repos-scala/scala-vundle')
+	call dein#add('groenewege/vim-less')
+	call dein#add('pangloss/vim-javascript')
+	call dein#add('ekalinin/Dockerfile.vim')
+	call dein#add('leafgarland/typescript-vim')
+	call dein#add('HerringtonDarkholme/yats.vim') " Typescript
+	call dein#add('jason0x43/vim-js-indent')
+	" call dein#add('Quramy/tsuquyomi')
+	" Syntax Checking
+	call dein#add('scrooloose/syntastic')
+	" call dein#add('vim-scripts/SyntaxComplete')
+	" call dein#add('Shougo/vimproc.vim', {'build' : 'make'})
 
-" Project tree
-call dein#add('scrooloose/nerdtree')
+	" Project tree
+	call dein#add('scrooloose/nerdtree')
 
-" Git extensions
-call dein#add('tpope/vim-git')
-call dein#add('tpope/vim-fugitive')
-" call dein#add('airblade/vim-gitgutter')
-" call dein#add('akiomik/git-gutter-vim')
+	" Git extensions
+	call dein#add('tpope/vim-git')
+	call dein#add('tpope/vim-fugitive')
+	" call dein#add('airblade/vim-gitgutter')
+	" call dein#add('akiomik/git-gutter-vim')
 
-" Better motion
-call dein#add('Lokaltog/vim-easymotion')
-call dein#add('bkad/CamelCaseMotion')
+	" Better motion
+	call dein#add('Lokaltog/vim-easymotion')
+	call dein#add('bkad/CamelCaseMotion')
 
-" TComment
-call dein#add('tomtom/tcomment_vim')
+	" TComment
+	call dein#add('tomtom/tcomment_vim')
 
-" Unimpaired
-call dein#add('tpope/vim-unimpaired')
+	" Unimpaired
+	call dein#add('tpope/vim-unimpaired')
 
-" Surrounds (mostly for html)
-call dein#add('tpope/vim-surround')
+	" Surrounds (mostly for html)
+	call dein#add('tpope/vim-surround')
 
-" Select entire file
-call dein#add('kana/vim-textobj-user')
-call dein#add('kana/vim-textobj-entire')
+	" Select entire file
+	call dein#add('kana/vim-textobj-user')
+	call dein#add('kana/vim-textobj-entire')
 
-" toggle relative/absolute line numbers
-call dein#add('myusuf3/numbers.vim')
+	" toggle relative/absolute line numbers
+	call dein#add('myusuf3/numbers.vim')
 
-" Quick find files
-call dein#add('ctrlpvim/ctrlp.vim')
+	" Quick find files
+	call dein#add('ctrlpvim/ctrlp.vim')
 
-" templating
-call dein#add('msanders/snipmate.vim')
+	" templating
+	call dein#add('msanders/snipmate.vim')
 
-" autocomplete
-call dein#add('Shougo/neocomplcache.vim')
+	" autocomplete
+	call dein#add('Shougo/neocomplcache.vim')
 
-" Status bar
-" call dein#add('bling/vim-airline')
+	" Status bar
+	call dein#add('vim-airline/vim-airline')
 
-" Searching
-call dein#add('dkprice/vim-easygrep')
+	" Searching
+	call dein#add('dkprice/vim-easygrep')
 
-" EditorConfig.org whitespace
-call dein#add('editorconfig/editorconfig-vim')
+	" EditorConfig.org whitespace
+	call dein#add('editorconfig/editorconfig-vim')
 
-call dein#end()
+	" shell within vim
+	" call dein#add('shougo/vimshell.vim')
+
+	call dein#end()
+endif
 
 filetype plugin indent on
 
@@ -339,6 +344,10 @@ function! s:check_back_space() "{{{
 let col = col('.') - 1
 return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
+
+" airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
 
 " Automatic commands
 if has("autocmd")
