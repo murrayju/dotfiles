@@ -85,6 +85,10 @@ if dein#load_state('~/.vim/')
 	" Status bar
 	call dein#add('vim-airline/vim-airline')
 
+	" external status bars
+	call dein#add('edkolev/promptline.vim')
+	call dein#add('edkolev/tmuxline.vim')
+
 	" Searching
 	call dein#add('dkprice/vim-easygrep')
 
