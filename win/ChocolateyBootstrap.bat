@@ -37,7 +37,7 @@ echo Chocolatey not yet installed, installing...
 :: basic apps
 call choco install -y 7zip
 call choco install -y 7zip.commandline
-call choco install -y freecommander
+:: call choco install -y freecommander
 
 :: browsers
 call choco install -y googlechrome
@@ -58,13 +58,13 @@ call choco install -y git
 call choco install -y hg
 call choco install -y tortoisegit
 call choco install -y tortoisehg
-:: call choco install -y sourcetree
+call choco install -y sourcetree
 call choco install -y vim
 call choco install -y editorconfig.core
-call choco install -y atom
-call choco install -y brackets
+:: call choco install -y atom
+:: call choco install -y brackets
 call choco install -y visualstudiocode
-call choco install -y sublimetext3
+:: call choco install -y sublimetext3
 call choco install -y notepadplusplus
 call choco install -y notepad2
 call choco install -y nodejs
@@ -74,11 +74,13 @@ call choco install -y easy.install
 call choco install -y pip
 call choco install -y dotPeek
 call choco install -y DotNet3.5
-call choco install -y DotNet4.0
-call choco install -y DotNet4.5.2
-call choco install -y jdk7
+:: call choco install -y DotNet4.7.1
+call choco install -y netfx-4.7.1-devpack
+call choco install -y dotnetcore-sdk
+call choco install -y windows-sdk-10
 call choco install -y jdk8 -params "both=true"
-call choco install -y apache.ant
+call choco install -y jdk11
+call choco install -y ant
 call choco install -y NAnt
 call choco install -y wireshark
 call choco install -y fiddler4
@@ -95,18 +97,18 @@ call choco install -y vmwarevsphereclient
 call choco install -y docker
 call choco install -y docker-machine
 call choco install -y docker-compose
-call choco install -y vagrant
+:: call choco install -y vagrant
 call choco install -y filezilla
 call choco install -y launchy
 call choco install -y autohotkey
 call choco install -y putty
-call choco install -y VirtualCloneDrive
+:: call choco install -y VirtualCloneDrive
 call choco install -y vlc
 call choco install -y windirstat
 call choco install -y winscp
 call choco install -y hashcheck
 call choco install -y foxitreader
-call choco install -y keepass
+call choco install -y keepassxc
 call choco install -y gimp
 
 pause
