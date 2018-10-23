@@ -95,7 +95,7 @@ call choco install -y virtualbox.extensionpack
 call choco install -y vmwareplayer
 call choco install -y vmwarevsphereclient
 call choco install -y docker
-call choco install -y docker-machine
+call choco install -y docker-for-windows
 call choco install -y docker-compose
 :: call choco install -y vagrant
 call choco install -y filezilla
