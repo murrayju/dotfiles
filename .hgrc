@@ -1,7 +1,13 @@
 [ui]
 username = Justin Murray <justin.murray@mmodal.com>
-merge = beyondcompare3
+merge = vscode
 editor = vim
+
+[merge-tools]
+vscode.executable = code
+vscode.args = --wait $output
+vscode.premerge = keep-merge3
+vscode.gui = True
 
 [auth]
 mmodal-npd.prefix = hg.mmodal-npd.com/
