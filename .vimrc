@@ -177,6 +177,9 @@ if exists("&undodir")
 	set undofile
 endif
 
+" Don’t create backups when editing files in certain directories
+set backupskip=/tmp/*,/private/tmp/*
+
 " Respect modeline in files
 set modeline
 set modelines=4
@@ -387,5 +390,7 @@ if has("autocmd")
 
 	" Also load indent files, to automatically do language-dependent indenting.
 	filetype plugin indent on
-endif
 
+	" Treat .md files as Markdown
+	autocmd BufNewFile,BufRead *.md setlocal filetype=markdown
+endif
