@@ -95,6 +95,9 @@ if dein#load_state('~/.vim/')
 	" EditorConfig.org whitespace
 	call dein#add('editorconfig/editorconfig-vim')
 
+	" javascript flow
+	call dein#add('flowtype/vim-flow')
+
 	" shell within vim
 	" call dein#add('shougo/vimshell.vim')
 

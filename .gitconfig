@@ -30,6 +30,8 @@
 	# Use custom `.gitignore` and `.gitattributes`
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
+	autocrlf = false
+	editor = code --wait
 
 [color]
 	# Use colors in Git commands that are capable of colored output when outputting to the terminal
@@ -50,6 +52,9 @@
 [merge]
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
+	tool = vscode
+[diff]
+	tool = vscode
 
 # Use `origin` as the default remote on the `master` branch in all cases
 [branch "master"]
@@ -71,3 +76,11 @@
 	insteadOf = "gist:"
 [push]
 	default = simple
+[mergetool "vscode"]
+	cmd = code --wait $MERGED
+[difftool "vscode"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+# Important, edit if you're not me
+[user]
+	email = justin@murrayju.com
+	name = Justin Murray

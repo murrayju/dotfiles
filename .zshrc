@@ -3,13 +3,10 @@ export ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
 
 # Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="powerlevel9k/powerlevel9k"
-DEFAULT_USER=murrayju
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status background_jobs time)
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+# DEFAULT_USER=murrayju
+# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(root_indicator context dir vcs)
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(vi_mode status background_jobs time)
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -102,3 +99,6 @@ if [[ "${terminfo[kcud1]}" != "" ]]; then
 fi
 
 # source ~/.bash_prompt_airline
+
+# use starship as prompt
+eval "$(starship init zsh)"
