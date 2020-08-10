@@ -26,21 +26,17 @@ brew install gnu-sed
 # Install a modern version of Bash.
 brew install bash
 brew install bash-completion2
-brew install fish
 brew install zsh
 
 # Make sure that shells are available
 if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
   echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
 fi;
-if ! fgrep -q "${BREW_PREFIX}/bin/fish" /etc/shells; then
-  echo "${BREW_PREFIX}/bin/fish" | sudo tee -a /etc/shells;
-fi;
 if ! fgrep -q "${BREW_PREFIX}/bin/zsh" /etc/shells; then
   echo "${BREW_PREFIX}/bin/zsh" | sudo tee -a /etc/shells;
-	# Use fish as default
-	chsh -s "${BREW_PREFIX}/bin/fish"
 fi;
+# Use zsh as default
+chsh -s "${BREW_PREFIX}/bin/zsh"
 
 # Install GnuPG to enable PGP-signing commits.
 brew install gnupg
