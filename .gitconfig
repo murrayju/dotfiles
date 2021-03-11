@@ -93,7 +93,7 @@
 	excludesfile = ~/.gitignore
 	attributesfile = ~/.gitattributes
 	autocrlf = false
-	editor = code --wait
+	editor = vim
 
 	# Treat spaces before tabs and all kinds of trailing whitespace as an error
 	# [default] trailing-space: looks for spaces at the end of a line
@@ -202,3 +202,5 @@
 [user]
 	email = justin@murrayju.com
 	name = Justin Murray
+[gpg]
+	program = gpg
