@@ -56,8 +56,8 @@ brew install woff2
 
 # fonts
 brew tap homebrew/cask-fonts
-brew cask install font-firamono-nerd-font
-brew cask install font-hack-nerd-font
+brew install --cask font-fira-code-nerd-font
+brew install --cask font-hack-nerd-font
 
 # Install other useful binaries.
 brew install ack
@@ -82,7 +82,7 @@ brew install wget
 brew install zopfli
 
 # applications
-brew cask install visual-studio-code
+brew install --cask visual-studio-code
 
 # Remove outdated versions from the cellar.
 brew cleanup
