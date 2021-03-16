@@ -172,6 +172,9 @@
 	# Make `git push` push relevant annotated tags when pushing branches out.
 	followTags = true
 
+[pull]
+	rebase = true
+
 # URL shorthands
 
 [url "git@github.com:"]
@@ -202,5 +205,7 @@
 [user]
 	email = justin@murrayju.com
 	name = Justin Murray
+
 [gpg]
 	program = gpg
+
