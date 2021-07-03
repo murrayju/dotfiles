@@ -141,13 +141,18 @@ set ttyfast
 " Add the g flag to search/replace by default
 set gdefault
 
-" Use ack instead of grep
+" Use grep
 set grepprg=grep\ -nrHE
 let g:EasyGrepCommand = 1
 let g:EasyGrepRoot = "repository"
 let g:EasyGrepRecursive = 1
 let g:EasyGrepFilesToExclude = ".git,node_moules,dist,ts-dist"
 let g:EasyGrepInvertWholeWord = 1
+
+" prefer ag over ack
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 " Use UTF-8
 set encoding=utf-8
