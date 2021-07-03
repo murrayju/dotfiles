@@ -89,6 +89,7 @@ call plug#begin('~/.vim/plugged')
 
   " Searching
   Plug 'dkprice/vim-easygrep'
+  Plug 'mileszs/ack.vim'
 
   " EditorConfig.org whitespace
   Plug 'editorconfig/editorconfig-vim'
@@ -140,9 +141,13 @@ set ttyfast
 " Add the g flag to search/replace by default
 set gdefault
 
-" Use grep, even on windows
+" Use ack instead of grep
 set grepprg=grep\ -nrHE
-let g:EasyGrepCommand="git"
+let g:EasyGrepCommand = 1
+let g:EasyGrepRoot = "repository"
+let g:EasyGrepRecursive = 1
+let g:EasyGrepFilesToExclude = ".git,node_moules,dist,ts-dist"
+let g:EasyGrepInvertWholeWord = 1
 
 " Use UTF-8
 set encoding=utf-8

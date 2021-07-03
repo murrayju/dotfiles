@@ -18,8 +18,7 @@ function doIt() {
 		--exclude "LICENSE-MIT.txt" \
 		-avh --no-perms . ~;
 	source ~/.bash_profile;
-	curl -fsSL https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh | sh -s ~/.vim/
-	vim -c "call dein#install()" +qall
+	vim -c "PlugInstall" +qall
 }
 
 if [ "$1" == "--force" -o "$1" == "-f" ]; then
