@@ -143,15 +143,17 @@ set gdefault
 
 " Use grep
 set grepprg=grep\ -nrHE
+if executable('git')
+  set grepprg=git\ grep\ -nrHE
+endif
 let g:EasyGrepCommand = 1
 let g:EasyGrepRoot = "repository"
-let g:EasyGrepRecursive = 1
 let g:EasyGrepFilesToExclude = ".git,node_moules,dist,ts-dist"
 let g:EasyGrepInvertWholeWord = 1
 
 " prefer ag over ack
 if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
+  let g:ackprg = 'ag --nogroup --nocolor --column'
 endif
 
 " Use UTF-8
