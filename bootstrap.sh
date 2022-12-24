@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-root="$(dirname ${BASH_SOURCE})"
+root=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "${root}";
 
 git pull origin master;
@@ -17,6 +17,7 @@ function doIt() {
     --exclude "win/" \
     --exclude "*.bat" \
     --exclude "LICENSE-MIT.txt" \
+    --exclude ".vimrc" \
     -avh --no-perms . ~;
   ln -sf "${root}/.vimrc" ~/.vimrc
   source ~/.bash_profile;
