@@ -27,6 +27,7 @@ call plug#begin('~/.vim/plugged')
   " color schemes
   Plug 'tomasr/molokai'
   Plug 'morhetz/gruvbox'
+  " Plug 'dracula/vim'
 
   " Syntax Coloring
   Plug 'tpope/vim-markdown', { 'for': 'markdown' }
@@ -91,6 +92,7 @@ call plug#begin('~/.vim/plugged')
 
   " EditorConfig.org whitespace
   Plug 'editorconfig/editorconfig-vim'
+  Plug 'vim-test/vim-test'
 
 
 " Initialize plugin system
@@ -107,6 +109,7 @@ if ((has("win32") || has("win64")) && !has("gui_running"))
 else
 	color desert
 	silent! color gruvbox
+	" silent! color dracula
 	set background=dark
 endif
 syntax on
@@ -128,7 +131,9 @@ set clipboard=unnamed
 set wildmenu
 
 " Allow cursor keys in insert mode
-set esckeys
+if !has('nvim')
+  set esckeys
+endif
 
 " Allow backspace in insert mode
 set backspace=indent,eol,start
@@ -331,7 +336,9 @@ map <C-n> :NERDTreeToggle<CR>
 "  :20  :  up to 20 lines of command-line history will be remembered
 "  %    :  saves and restores the buffer list
 "  n... :  where to save the viminfo files
-set viminfo='10,\"100,:20,n~/.viminfo
+if !has('nvim')
+  set viminfo='10,\"100,:20,n~/.viminfo
+endif
 function! ResCur()
 	if line("'\"") <= line("$")
 		normal! g`"
