@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Make sure that brew is installed
-brew --version || $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)
+brew --version || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Make sure we’re using the latest Homebrew.
 brew update
@@ -29,12 +29,12 @@ brew install bash-completion2
 brew install zsh
 
 # Make sure that shells are available
-if ! fgrep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
-  echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells;
-fi;
-if ! fgrep -q "${BREW_PREFIX}/bin/zsh" /etc/shells; then
-  echo "${BREW_PREFIX}/bin/zsh" | sudo tee -a /etc/shells;
-fi;
+if ! grep -q "${BREW_PREFIX}/bin/bash" /etc/shells; then
+  echo "${BREW_PREFIX}/bin/bash" | sudo tee -a /etc/shells
+fi
+if ! grep -q "${BREW_PREFIX}/bin/zsh" /etc/shells; then
+  echo "${BREW_PREFIX}/bin/zsh" | sudo tee -a /etc/shells
+fi
 # Use zsh as default
 chsh -s "${BREW_PREFIX}/bin/zsh"
 
@@ -42,7 +42,7 @@ chsh -s "${BREW_PREFIX}/bin/zsh"
 brew install gnupg
 
 # Install more recent versions of some macOS tools.
-brew install vim
+brew install neovim
 brew install grep
 brew install openssh
 brew install screen
@@ -62,6 +62,10 @@ brew install --cask font-hack-nerd-font
 # Install other useful binaries.
 brew install ack
 brew install bat
+brew install ast-grep
+brew install ripgrep
+brew install fd
+brew install exa
 brew install git
 brew install git-lfs
 brew install gs

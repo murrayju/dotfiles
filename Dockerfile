@@ -7,5 +7,5 @@ RUN locale-gen en_US.utf8
 ENV SHELL /bin/bash
 COPY [".", "/root/.dotfiles"]
 WORKDIR /root/.dotfiles
-RUN bash -ex bootstrap.sh -f
+RUN bash -ex bs -f
 WORKDIR /

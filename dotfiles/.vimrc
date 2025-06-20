@@ -1,5 +1,14 @@
+" Compatibility shim for legacy vim
+" This configuration has been migrated to Neovim
+" See .config/nvim/ for the modern configuration
+
 if &compatible
   set nocompatible " Be iMproved
+endif
+
+" If running in Neovim, source the modern config
+if has('nvim')
+  finish
 endif
 
 " Some environment based settings
