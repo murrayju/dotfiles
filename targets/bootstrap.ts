@@ -3,7 +3,7 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import * as os from 'os';
 import { fileURLToPath } from 'url';
-import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
+import { ensureBrewfileInstalled, ensureBrewInstalled, isMac } from 'build-strap';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -84,6 +84,7 @@ async function symlinkDirContents(
         } else {
           // Backup existing item and replace with link
           const diffResult = getDiffSummary(sourcePath, targetPath);
+          await fs.ensureDir(path.join(BACKUP_DIR, prefix));
           const backupPath = path.join(BACKUP_DIR, prefix, item);
           await fs.move(targetPath, backupPath);
           console.log(
@@ -151,11 +152,8 @@ function installTmuxPluginManager(): void {
 export default async function main() {
   console.log('🚀 Starting dotfiles bootstrap...');
 
-  // Create backup directory
-  await fs.ensureDir(BACKUP_DIR);
-
   // Create symlinks for dotfiles
-  symlinkDotfiles();
+  await symlinkDotfiles();
 
   // Install additional tools
   installOhMyZsh();
@@ -164,14 +162,11 @@ export default async function main() {
 
   console.log('\n🍺 Installing Homebrew and Brewfile...');
   await ensureBrewInstalled();
-  await ensureBrewfileInstalled(path.join(__dirname, '..', 'Brewfile'));
+  if (isMac()) {
+    await ensureBrewfileInstalled(path.join(__dirname, '..', 'Brewfile'));
+  }
 
   console.log('\n✅ Bootstrap completed!');
   console.log('\nNext steps:');
   console.log('1. Run "source ~/.zshrc" to reload your shell');
-  console.log('2. Configure Neovim by opening it and running ":Lazy install"');
-
-  if (fs.existsSync(BACKUP_DIR) && fs.readdirSync(BACKUP_DIR).length > 0) {
-    console.log(`\n📁 Original files backed up to: ${BACKUP_DIR}`);
-  }
 }
