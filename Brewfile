@@ -23,12 +23,9 @@ brew 'php'
 brew 'gmp'
 
 # Install font tools.
-tap 'bramstein/webfonttools'
-brew 'sfnt2woff'
 brew 'woff2'
 
 # fonts
-tap 'homebrew/cask-fonts'
 cask 'font-fira-code-nerd-font'
 cask 'font-hack-nerd-font'
 

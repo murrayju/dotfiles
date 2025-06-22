@@ -40,7 +40,6 @@ return {
         "vimdoc",
         "yaml",
         "go",
-        "ruby",
         "dockerfile",
         "css",
         "scss",
