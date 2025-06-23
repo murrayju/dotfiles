@@ -3,7 +3,11 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import * as os from 'os';
 import { fileURLToPath } from 'url';
-import { ensureBrewfileInstalled, ensureBrewInstalled, isMac } from 'build-strap';
+import {
+  ensureBrewfileInstalled,
+  ensureBrewInstalled,
+  isMac,
+} from 'build-strap';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -85,8 +89,16 @@ async function symlinkDirContents(
           // Backup existing item and replace with link
           const diffResult = getDiffSummary(sourcePath, targetPath);
           await fs.ensureDir(path.join(BACKUP_DIR, prefix));
-          const backupPath = path.join(BACKUP_DIR, prefix, item);
-          await fs.move(targetPath, backupPath);
+          let backupPath = path.join(BACKUP_DIR, prefix, item);
+          if (await fs.exists(backupPath)) {
+            backupPath = path.join(BACKUP_DIR, prefix, `${item}-${Date.now()}`);
+          }
+          try {
+            await fs.move(targetPath, backupPath);
+          } catch (error) {
+            console.error(`Failed to backup ${targetPath} to ${backupPath}`);
+            throw error;
+          }
           console.log(
             `  ⚠️  ${name} (backed up, ${diffResult.diffLines} differing lines)`,
           );
