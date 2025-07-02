@@ -149,3 +149,4 @@ alias path='echo -e ${PATH//:/\\n}'
 alias dc="docker compose"
 alias dcub="docker compose up -d --build"
 alias bs="./bs"
+alias k="kubectl"
