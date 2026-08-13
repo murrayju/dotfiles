@@ -162,15 +162,4 @@ return {
       })
     end,
   },
-
-  -- Better motion
-  {
-    "phaazon/hop.nvim",
-    keys = {
-      { "?", ":HopChar2<CR>", mode = { "n", "x", "o" }, desc = "Hop to 2 chars" },
-    },
-    config = function()
-      require("hop").setup()
-    end,
-  },
 }

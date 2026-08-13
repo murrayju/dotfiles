@@ -80,7 +80,6 @@ return {
       })
 
       -- LSP settings
-      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
       -- Setup progress indicator
@@ -89,7 +88,7 @@ return {
       -- LSP keymaps
       local on_attach = function(client, bufnr)
         local opts = { buffer = bufnr, silent = true }
-        
+
         vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
         vim.keymap.set("n", "gy", vim.lsp.buf.type_definition, opts)
         vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
@@ -106,7 +105,7 @@ return {
         vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
       end
 
-      -- Language servers
+      -- Language servers using the new vim.lsp.config API
       local servers = {
         lua_ls = {
           settings = {
@@ -126,10 +125,11 @@ return {
       }
 
       for server, config in pairs(servers) do
-        lspconfig[server].setup(vim.tbl_extend("force", {
+        vim.lsp.config[server] = vim.tbl_extend("force", {
           capabilities = capabilities,
           on_attach = on_attach,
-        }, config))
+        }, config)
+        vim.lsp.enable(server)
       end
     end,
   },
