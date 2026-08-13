@@ -1,0 +1,5 @@
+[ruby]
+detect_variables = []
+
+[docker_context]
+format = '🐳 '
