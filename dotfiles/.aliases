@@ -148,7 +148,17 @@ alias reload="exec ${SHELL} -l"
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
 
-alias dc="docker compose"
-alias dcub="docker compose up -d --build"
+# Prefer `docker compose`, fall back to `podman compose` when docker isn't available
+dc() {
+  if command -v docker >/dev/null 2>&1; then
+    command docker compose "$@"
+  elif command -v podman >/dev/null 2>&1; then
+    command podman compose "$@"
+  else
+    echo "dc: neither docker nor podman found in PATH" >&2
+    return 127
+  fi
+}
+dcub() { dc up -d --build "$@"; }
 alias bs="./bs"
 alias k="kubectl"

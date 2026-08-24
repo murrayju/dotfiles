@@ -6,5 +6,8 @@
     "typescriptreact"
   ],
   "eslint.autoFixOnSave": true,
-  "prettier.disableSuccessMessage": true
+  "prettier.disableSuccessMessage": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
