@@ -12,9 +12,12 @@ alias -- -="cd -"
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
 alias g="git"
+alias gc="git commit"
 alias gca="git commit -a"
 alias gl="git pull"
 alias gp="git push"
+alias gsw="git switch"
+alias gswc="git switch -c"
 
 # Detect which `ls` flavor is in use
 if ls --color >/dev/null 2>&1; then # GNU `ls`

@@ -9,5 +9,9 @@
   "prettier.disableSuccessMessage": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
+  },
+  "json.schemaDownload.trustedDomains": {
+    "https://www.schemastore.org": true,
+    "https://json.schemastore.org": true
   }
 }
