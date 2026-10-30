@@ -1,0 +1,13 @@
+onboarding = false
+
+[ui.toast]
+delivery = "system"
+
+[theme]
+name = "terminal"
+auto_switch = false
+
+[keys]
+split_vertical = ["prefix+|", "prefix+v"] # side by side
+split_horizontal = ["prefix+minus", "prefix+double_quote"] # stacked
+rename_tab = ["prefix+comma", "prefix+shift+t"] # tmux "window" = herdr tab
