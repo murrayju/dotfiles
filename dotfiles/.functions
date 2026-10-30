@@ -176,3 +176,38 @@ function unquarantine() {
 function tre() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
 }
+
+# Run `terraform apply` for a workspace: `tfa [<workspace>] [<apply args>...]`.
+# With a workspace, select it and use `terraform.<workspace>.tfvars`.
+# Without a workspace, use the `default` workspace and no var file. This fails
+# if the root has workspace tfvars files, to prevent an apply to the wrong
+# workspace. The first argument is a workspace only if it does not start with
+# `-`. All other arguments go to `terraform apply` (for example `-target=...`).
+function tfa() {
+	local workspace="default";
+	if [ $# -gt 0 ] && [[ "$1" != -* ]]; then
+		workspace="$1";
+		shift;
+	fi;
+	local varFileArgs=();
+	if [ "$workspace" = "default" ]; then
+		local workspaceVarFiles;
+		workspaceVarFiles=$(find . -maxdepth 1 -name 'terraform.*.tfvars' | sort);
+		if [ -n "$workspaceVarFiles" ]; then
+			echo "usage: tfa <workspace> [<apply args>...]" >&2;
+			echo "This root has workspace var files:" >&2;
+			echo "$workspaceVarFiles" >&2;
+			return 1;
+		fi;
+	else
+		local varFile="terraform.${workspace}.tfvars";
+		if [ ! -f "$varFile" ]; then
+			echo "tfa: ${varFile} not found" >&2;
+			return 1;
+		fi;
+		varFileArgs=("-var-file=${varFile}");
+	fi;
+	terraform init -lockfile=readonly \
+		&& terraform workspace select "$workspace" \
+		&& terraform apply "${varFileArgs[@]}" "$@";
+}

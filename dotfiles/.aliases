@@ -165,3 +165,6 @@ dc() {
 dcub() { dc up -d --build "$@"; }
 alias bs="./bs"
 alias k="kubectl"
+
+# Terraform shorthand
+alias tf=terraform
