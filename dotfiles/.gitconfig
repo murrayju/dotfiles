@@ -203,7 +203,7 @@
 	cmd = code --wait --diff $LOCAL $REMOTE
 # Important, edit if you're not me
 [user]
-	email = justin@tigerdata.com
+	email = justin@murr.me
 	name = Justin Murray
 	signingkey = 3EEEE73751B813B4
 
@@ -218,3 +218,8 @@
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
+
+# Load machine-specific settings (for example, a work email) from a file that
+# is not in the repository. Keep this section last, so its values override.
+[include]
+	path = ~/.gitconfig.local

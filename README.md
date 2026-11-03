@@ -71,6 +71,14 @@ git config --global user.email "$GIT_AUTHOR_EMAIL"
 
 You could also use `~/.extra` to override settings, functions and aliases from my dotfiles repository. It’s probably better to [fork this repository](https://github.com/murrayju/dotfiles/fork) instead, though.
 
+### Machine-specific git settings
+
+`~/.gitconfig` is a symlink into this repository, so `git config --global` changes the tracked file. Put machine-specific git settings (for example, a work email) in `~/.gitconfig.local` instead. `~/.gitconfig` includes it last, so its values override:
+
+```bash
+git config --file ~/.gitconfig.local user.email "me@work.example"
+```
+
 ### Sensible macOS defaults
 
 When setting up a new Mac, you may want to set some sensible macOS defaults:
