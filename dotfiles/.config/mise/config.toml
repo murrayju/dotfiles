@@ -1,0 +1,19 @@
+# Global tools. mise installs these per user, on macOS and Linux.
+# Projects can pin other versions in their own mise.toml or .tool-versions.
+# System tools, libraries, and apps stay in the Brewfile.
+[tools]
+ast-grep = "latest"
+bat = "latest"
+bun = "latest"
+eza = "latest"
+fd = "latest"
+gh = "latest"
+go = "latest"
+jq = "latest"
+neovim = "latest"
+node = "lts"
+ripgrep = "latest"
+shellcheck = "latest"
+shfmt = "latest"
+starship = "latest"
+uv = "latest"

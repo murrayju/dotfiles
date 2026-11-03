@@ -3,11 +3,7 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import * as os from 'os';
 import { fileURLToPath } from 'url';
-import {
-  ensureBrewfileInstalled,
-  ensureBrewInstalled,
-  isMac,
-} from 'build-strap';
+import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +11,8 @@ const __dirname = path.dirname(__filename);
 const DOTFILES_DIR: string = path.join(path.dirname(__dirname), 'dotfiles');
 const HOME_DIR: string = os.homedir();
 const BACKUP_DIR: string = path.join(HOME_DIR, '.dotfiles_backup');
+// The mise.run installer puts mise here.
+const MISE_BIN: string = path.join(HOME_DIR, '.local/bin/mise');
 
 interface DiffResult {
   diffLines: number;
@@ -161,6 +159,15 @@ function installTmuxPluginManager(): void {
   }
 }
 
+function installMiseTools(): void {
+  if (!fs.existsSync(MISE_BIN)) {
+    console.log('Installing mise...');
+    execSync('curl -fsSL https://mise.run | sh', { stdio: 'inherit' });
+  }
+  // Install the tools in the global config (~/.config/mise/config.toml).
+  execSync(`"${MISE_BIN}" install`, { stdio: 'inherit', cwd: HOME_DIR });
+}
+
 export default async function main() {
   console.log('🚀 Starting dotfiles bootstrap...');
 
@@ -174,9 +181,10 @@ export default async function main() {
 
   console.log('\n🍺 Installing Homebrew and Brewfile...');
   await ensureBrewInstalled();
-  if (isMac()) {
-    await ensureBrewfileInstalled(path.join(__dirname, '..', 'Brewfile'));
-  }
+  await ensureBrewfileInstalled(path.join(__dirname, '..', 'Brewfile'));
+
+  console.log('\n🧰 Installing mise and its tools...');
+  installMiseTools();
 
   console.log('\n✅ Bootstrap completed!');
   console.log('\nNext steps:');

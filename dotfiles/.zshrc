@@ -59,6 +59,15 @@ plugins=(git docker yarn mercurial vi-mode)
 
 # User configuration
 
+# Load Homebrew. Look in the default install paths for macOS and Linux.
+for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+  if [ -x "$brew_bin" ]; then
+    eval "$("$brew_bin" shellenv zsh)"
+    break
+  fi
+done
+unset brew_bin
+
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
 
@@ -82,6 +91,12 @@ for file in ~/.{path,exports,aliases,functions,extra,zsh_extra}; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
+
+# Activate mise after the PATH setup. mise puts its tools before ~/.local/bin,
+# so they come before the Homebrew tools.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
 
 # start typing + [Up-Arrow] - fuzzy find history forward
 if [[ "${terminfo[kcuu1]}" != "" ]]; then

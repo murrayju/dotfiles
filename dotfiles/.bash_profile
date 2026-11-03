@@ -1,3 +1,12 @@
+# Load Homebrew. Look in the default install paths for macOS and Linux.
+for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
+  if [ -x "$brew_bin" ]; then
+    eval "$("$brew_bin" shellenv bash)"
+    break
+  fi
+done
+unset brew_bin
+
 # Add `~/bin` to the `$PATH`
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
@@ -8,6 +17,12 @@ for file in ~/.{path,bash_prompt_airline,exports,aliases,functions,extra,bash_ex
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
+
+# Activate mise after the PATH setup. mise puts its tools before ~/.local/bin,
+# so they come before the Homebrew tools.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
 
 # Load dircolors
 command -v dircolors >/dev/null 2>&1 && { eval "$(dircolors ~/.dir_colors)"; }

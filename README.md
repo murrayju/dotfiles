@@ -28,6 +28,8 @@ The new bootstrap system will:
 - Create symlinks from the repository to your home directory
 - Back up any existing files that differ from the repository versions
 - Install Oh My Zsh, Powerlevel10k theme, and Tmux Plugin Manager
+- Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
+- Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Set up the modern Neovim configuration
 
 ### Git-free install
@@ -77,15 +79,14 @@ When setting up a new Mac, you may want to set some sensible macOS defaults:
 ./.macos
 ```
 
-### Install Homebrew formulae
+### Packages: Homebrew and mise
 
-When setting up a new Mac, you may want to install some common [Homebrew](https://brew.sh/) formulae (after installing Homebrew, of course):
+The bootstrap uses two package managers, on both macOS and Linux:
 
-```bash
-./brew.sh
-```
+- **Homebrew** (`Brewfile`): shells, GNU utilities, libraries, fonts, and apps. Casks are only installed on macOS.
+- **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 
-Some of the functionality of these dotfiles depends on formulae installed by `brew.sh`. If you don’t plan to run `brew.sh`, you should look carefully through the script and manually install any particularly important ones. A good example is Bash/Git completion: the dotfiles use a special version from Homebrew.
+The shell config loads Homebrew first and activates mise last, so mise tools take priority.
 
 ## Feedback
 

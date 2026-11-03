@@ -13,11 +13,8 @@ This is a personal dotfiles repository based on Mathias Bynens' dotfiles, provid
 # Fresh installation (clones and runs modern bootstrap)
 git clone https://github.com/murrayju/dotfiles.git ~/.dotfiles && cd ~/.dotfiles && ./bs
 
-# Update existing installation
+# Update existing installation (also installs the Brewfile and mise tools)
 cd ~/.dotfiles && ./bs
-
-# Install Homebrew packages (includes neovim and modern tools)
-./brew.sh
 
 # Configure macOS system preferences (requires admin privileges)
 ./.macos
@@ -52,7 +49,8 @@ alias
 ### Installation System
 - `bootstrap.js` - Modern JavaScript-based installation script using build-strap-cli
 - `bs` - Bootstrap entrypoint script from build-strap-cli
-- `brew.sh` - Installs essential development tools via Homebrew (includes Neovim)
+- `Brewfile` - System tools, libraries, and apps via Homebrew (macOS and Linux)
+- `dotfiles/.config/mise/config.toml` - Global developer tools via mise (Node, Go, Neovim, ripgrep, and more)
 - `.macos` - Configures macOS system preferences and Finder settings
 
 ### Plugin Management
@@ -65,7 +63,7 @@ alias
 - **LSP Support**: TypeScript, Go, Ruby, and more language servers
 - **GitHub Copilot**: AI-powered code completion
 - **Claude Code**: Integration with Claude Code for AI assistance
-- **Modern Tools**: ripgrep, fd, exa, bat for enhanced command-line experience
+- **Modern Tools**: ripgrep, fd, eza, bat for enhanced command-line experience
 
 ### Customization Pattern
 The dotfiles support local customization through:
