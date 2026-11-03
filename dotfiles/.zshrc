@@ -84,6 +84,12 @@ source $ZSH/oh-my-zsh.sh
 # fi
 export EDITOR='vim'
 
+# Activate mise before the shell dotfiles, so that they can find mise tools.
+# mise puts its tools before ~/.local/bin, so they come before the Homebrew tools.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
@@ -91,12 +97,6 @@ for file in ~/.{path,exports,aliases,functions,extra,zsh_extra}; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
-
-# Activate mise after the PATH setup. mise puts its tools before ~/.local/bin,
-# so they come before the Homebrew tools.
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate zsh)"
-fi
 
 # start typing + [Up-Arrow] - fuzzy find history forward
 if [[ "${terminfo[kcuu1]}" != "" ]]; then

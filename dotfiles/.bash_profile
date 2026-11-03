@@ -10,6 +10,12 @@ unset brew_bin
 # Add `~/bin` to the `$PATH`
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
+# Activate mise before the shell dotfiles, so that they can find mise tools.
+# mise puts its tools before ~/.local/bin, so they come before the Homebrew tools.
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
+
 # Load the shell dotfiles, and then some:
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
@@ -17,12 +23,6 @@ for file in ~/.{path,bash_prompt_airline,exports,aliases,functions,extra,bash_ex
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
 unset file
-
-# Activate mise after the PATH setup. mise puts its tools before ~/.local/bin,
-# so they come before the Homebrew tools.
-if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate bash)"
-fi
 
 # Load dircolors
 command -v dircolors >/dev/null 2>&1 && { eval "$(dircolors ~/.dir_colors)"; }

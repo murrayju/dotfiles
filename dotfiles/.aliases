@@ -40,6 +40,15 @@ alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
 # Always use color output for `ls`
 alias ls="command ls ${colorflag}"
 
+# Use eza in place of `ls` if eza is installed. Some eza flags are different
+# (for example, `-t` needs a value). Use `command ls` to get the original `ls`.
+if command -v eza >/dev/null 2>&1; then
+  alias l="eza -l --classify=always"
+  alias la="eza -lA --classify=always"
+  alias lsd="eza -lD --classify=always"
+  alias ls="eza"
+fi
+
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
 alias grep='grep --color=auto'
