@@ -211,3 +211,56 @@ function tfa() {
 		&& terraform workspace select "$workspace" \
 		&& terraform apply "${varFileArgs[@]}" "$@";
 }
+
+# Run the `pi` coding agent inside a bubblewrap (bwrap) jail so it can only
+# write to the working directory and its own ~/.pi state; the rest of the
+# filesystem is mounted read-only and /tmp is a private tmpfs. Network is
+# shared by default so pi can reach model providers. Requires an AppArmor
+# profile granting unprivileged user namespaces to bwrap.
+#
+# Usage: bwrap-pi [--ro|--rw] [--work <dir>] [--rw-path <dir>] [--no-net] [--] [<pi args>...]
+#   --ro           mount the working directory read-only (default: writable)
+#   --rw           mount the working directory read-write (default)
+#   --work <dir>   use <dir> as the working directory (default: $PWD)
+#   --rw-path <d>  additionally mount <dir> read-write
+#   --no-net       run without network access
+function bwrap-pi() {
+	if ! command -v bwrap > /dev/null 2>&1; then
+		echo "bwrap-pi: bwrap not found in PATH" >&2;
+		return 1;
+	fi;
+
+	local piBin;
+	piBin="$(command -v pi || echo "$HOME/bin/pi")";
+
+	local workspace="$PWD";
+	local workMode="--bind";
+	local netArgs=();
+	local extraArgs=();
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--ro) workMode="--ro-bind"; shift;;
+			--rw) workMode="--bind"; shift;;
+			--work) workspace="$2"; shift 2;;
+			--work=*) workspace="${1#--work=}"; shift;;
+			--rw-path) extraArgs+=(--bind "$2" "$2"); shift 2;;
+			--no-net) netArgs=(--unshare-net); shift;;
+			--) shift; break;;
+			*) break;;
+		esac;
+	done;
+
+	exec bwrap \
+		--ro-bind / / \
+		--tmpfs /tmp \
+		--dev /dev --proc /proc \
+		--bind "$HOME/.pi" "$HOME/.pi" \
+		"$workMode" "$workspace" "$workspace" \
+		"${extraArgs[@]}" \
+		--unshare-pid --unshare-ipc --unshare-uts \
+		"${netArgs[@]}" \
+		--new-session --die-with-parent \
+		--chdir "$workspace" \
+		--setenv HOME "$HOME" \
+		"$piBin" "$@";
+}
