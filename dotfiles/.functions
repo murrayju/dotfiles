@@ -218,15 +218,15 @@ function tfa() {
 # shared by default so pi can reach model providers. Requires an AppArmor
 # profile granting unprivileged user namespaces to bwrap.
 #
-# Usage: bwrap-pi [--ro|--rw] [--work <dir>] [--rw-path <dir>] [--no-net] [--] [<pi args>...]
+# Usage: bwpi [--ro|--rw] [--work <dir>] [--rw-path <dir>] [--no-net] [--] [<pi args>...]
 #   --ro           mount the working directory read-only (default: writable)
 #   --rw           mount the working directory read-write (default)
 #   --work <dir>   use <dir> as the working directory (default: $PWD)
 #   --rw-path <d>  additionally mount <dir> read-write
 #   --no-net       run without network access
-function bwrap-pi() {
+function bwpi() {
 	if ! command -v bwrap > /dev/null 2>&1; then
-		echo "bwrap-pi: bwrap not found in PATH" >&2;
+		echo "bwpi: bwrap not found in PATH" >&2;
 		return 1;
 	fi;
 
