@@ -224,6 +224,22 @@ function tfa() {
 #   --work <dir>   use <dir> as the working directory (default: $PWD)
 #   --rw-path <d>  additionally mount <dir> read-write
 #   --no-net       run without network access
+#
+# NOTE: `--new-session` is intentionally omitted when the kernel already
+# blocks TIOCSTI input injection. setsid() detaches the sandbox from the
+# controlling terminal, so the pty's foreground process group (bwrap itself)
+# receives SIGWINCH and the sandboxed child never does. Node only refreshes
+# its tty dimensions from SIGWINCH, so pi (and vim, htop, ...) never learn the
+# terminal was resized and the screen stops redrawing correctly.
+#
+# `--new-session` exists to stop a sandboxed process injecting keystrokes into
+# your shell via the TIOCSTI ioctl (CVE-2017-5226). Linux 6.2 added the
+# /proc/sys/dev/tty/legacy_tiocsti knob; when it reads 0 the kernel denies
+# TIOCSTI to anything without CAP_SYS_ADMIN in the initial user namespace, so
+# the flag buys nothing. Kernels/distros without that knob still get
+# --new-session (safe, but no resize handling).
+#   BWPI_NEW_SESSION=1  force --new-session on (pre-6.2 kernels)
+#   BWPI_NEW_SESSION=0  force it off (resize works, TIOCSTI unprotected)
 function bwpi() {
 	if ! command -v bwrap > /dev/null 2>&1; then
 		echo "bwpi: bwrap not found in PATH" >&2;
@@ -237,6 +253,16 @@ function bwpi() {
 	local workMode="--bind";
 	local netArgs=();
 	local extraArgs=();
+	local sessionArgs=();
+	case "${BWPI_NEW_SESSION:-auto}" in
+		0) ;;
+		1) sessionArgs=(--new-session);;
+		*)
+			# No knob (kernel < 6.2) or TIOCSTI still permitted: stay safe.
+			if [ "$(cat /proc/sys/dev/tty/legacy_tiocsti 2> /dev/null)" != "0" ]; then
+				sessionArgs=(--new-session);
+			fi;;
+	esac;
 	while [ $# -gt 0 ]; do
 		case "$1" in
 			--ro) workMode="--ro-bind"; shift;;
@@ -250,7 +276,10 @@ function bwpi() {
 		esac;
 	done;
 
-	exec bwrap \
+	# Not `exec`: exec would replace the interactive shell with bwrap, so the
+	# terminal window/session dies along with pi. Running bwrap as a child lets
+	# the shell reclaim the terminal and print a fresh prompt afterwards.
+	bwrap \
 		--ro-bind / / \
 		--tmpfs /tmp \
 		--dev /dev --proc /proc \
@@ -259,7 +288,7 @@ function bwpi() {
 		"${extraArgs[@]}" \
 		--unshare-pid --unshare-ipc --unshare-uts \
 		"${netArgs[@]}" \
-		--new-session --die-with-parent \
+		"${sessionArgs[@]}" --die-with-parent \
 		--chdir "$workspace" \
 		--setenv HOME "$HOME" \
 		"$piBin" "$@";
