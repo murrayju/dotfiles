@@ -114,3 +114,11 @@ case "$OSTYPE" in
     complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes SystemUIServer Terminal Twitter" killall
     ;;
 esac
+
+# use starship as prompt. Must come last so nothing overwrites PS1/PROMPT_COMMAND.
+# Only for interactive shells: `starship init` sets PS0/PROMPT_COMMAND and spawns
+# `starship time`, which is wasted work for `ssh host command` and other
+# non-interactive login shells.
+if [[ $- == *i* ]] && command -v starship >/dev/null 2>&1; then
+  eval "$(starship init bash)"
+fi
