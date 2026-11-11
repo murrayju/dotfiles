@@ -1,0 +1,30 @@
+# Debian/Ubuntu system packages, installed by `./bs apt` (needs sudo).
+# These are the tools that must come from the distro rather than Homebrew, so
+# they integrate with system services (gpg-agent, ssh-agent, glib, dbus, ...).
+# One package name per line; `#` starts a comment.
+
+bash-completion
+bc
+bubblewrap
+build-essential
+curl
+dnsutils
+file
+ghostscript
+git
+git-lfs
+gnupg
+imagemagick
+iproute2
+moreutils
+openssh-client
+openssl
+pigz
+pv
+rename
+tree
+wget
+wl-clipboard
+xclip
+zopfli
+zsh

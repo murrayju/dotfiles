@@ -5,11 +5,6 @@ function mkd() {
 	mkdir -p "$@" && cd "$_";
 }
 
-# Change working directory to the top-most Finder window location
-function cdf() { # short for `cdfinder`
-	cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')";
-}
-
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
 function targz() {
 	local tmpFile="${@%/}.tar";
@@ -51,7 +46,7 @@ function fs() {
 	else
 		local arg=-sh;
 	fi
-	if [[ -n "$@" ]]; then
+	if [ $# -gt 0 ]; then
 		du $arg -- "$@";
 	else
 		du $arg .[^.]* ./*;
@@ -78,19 +73,10 @@ function dataurl() {
 # Start an HTTP server from a directory, optionally specifying the port
 function server() {
 	local port="${1:-8000}";
-	sleep 1 && open "http://localhost:${port}/" &
-	# Set the default Content-Type to `text/plain` instead of `application/octet-stream`
-	# And serve everything as UTF-8 (although not technically correct, this doesn’t break anything for binary files)
-	python -c $'import SimpleHTTPServer;\nmap = SimpleHTTPServer.SimpleHTTPRequestHandler.extensions_map;\nmap[""] = "text/plain";\nfor key, value in map.items():\n\tmap[key] = value + ";charset=UTF-8";\nSimpleHTTPServer.test();' "$port";
-}
-
-# Start a PHP server from a directory, optionally specifying the port
-# (Requires PHP 5.4.0+.)
-function phpserver() {
-	local port="${1:-4000}";
-	local ip=$(ipconfig getifaddr en1);
-	sleep 1 && open "http://${ip}:${port}/" &
-	php -S "${ip}:${port}";
+	command -v python3 > /dev/null 2>&1 || { echo "server: python3 not found" >&2; return 1; }
+	# Serve from the current directory; `open` is normalized below (xdg-open on Linux).
+	( sleep 1 && open "http://localhost:${port}/" ) &
+	python3 -m http.server "$port";
 }
 
 # Compare original and gzipped file size
@@ -141,16 +127,9 @@ function getcertnames() {
 	fi;
 }
 
-# Normalize `open` across Linux, macOS, and Windows.
-# This is needed to make the `o` function (see below) cross-platform.
-if [ ! $(uname -s) = 'Darwin' ]; then
-	if grep -q Microsoft /proc/version; then
-		# Ubuntu on Windows using the Linux subsystem
-		alias open='explorer.exe';
-	else
-		alias open='xdg-open';
-	fi
-fi
+# The shared `o` function below calls `open`. macOS has a real `open`; on Linux
+# the equivalent alias is defined in .functions_linux, which is sourced right
+# after this file.
 
 # `o` with no arguments opens the current directory, otherwise opens the given
 # location
@@ -160,13 +139,6 @@ function o() {
 	else
 		open "$@";
 	fi;
-}
-
-# Manually remove a downloaded app or file from the quarantine
-function unquarantine() {
-	for attribute in com.apple.metadata:kMDItemDownloadedDate com.apple.metadata:kMDItemWhereFroms com.apple.quarantine; do
-		xattr -r -d "$attribute" "$@"
-	done
 }
 
 # `tre` is a shorthand for `tree` with hidden files and color enabled, ignoring
@@ -210,103 +182,4 @@ function tfa() {
 	terraform init -lockfile=readonly \
 		&& terraform workspace select "$workspace" \
 		&& terraform apply "${varFileArgs[@]}" "$@";
-}
-
-# Run the `pi` coding agent inside a bubblewrap (bwrap) jail so it can only
-# write to the working directory and its own ~/.pi state; the rest of the
-# filesystem is mounted read-only and /tmp is a private tmpfs. Network is
-# shared by default so pi can reach model providers. Requires an AppArmor
-# profile granting unprivileged user namespaces to bwrap.
-#
-# Usage: bwpi [--ro|--rw] [--work <dir>] [--rw-path <dir>] [--no-net] [--] [<pi args>...]
-#   --ro           mount the working directory read-only (default: writable)
-#   --rw           mount the working directory read-write (default)
-#   --work <dir>   use <dir> as the working directory (default: $PWD)
-#   --rw-path <d>  additionally mount <dir> read-write
-#   --no-net       run without network access
-#
-# npm/npx cache: MCP servers configured with `npx` (see ~/.pi/agent/mcp.json)
-# need a *writable* npm cache, otherwise npm aborts while creating
-# ~/.npm/_cacache/tmp with EROFS. Rather than mounting the host ~/.npm
-# read-write -- which also holds _npx installs that later run unsandboxed, so
-# a sandboxed process could plant code there -- npm is pointed at a
-# sandbox-owned cache under ~/.pi. Use BWPI_NPM_CACHE="$HOME/.npm" together
-# with `--rw-path "$HOME/.npm"` to share the host cache instead (faster,
-# reuses tarballs already downloaded). Note that `--no-net` only works for
-# packages already present in the cache, and that the sandbox has its own
-# network namespace, so in-jail 127.0.0.1 is not the host's localhost.
-#
-#   BWPI_NPM_CACHE  npm cache directory handed to the sandbox
-#
-# NOTE: `--new-session` is intentionally omitted when the kernel already
-# blocks TIOCSTI input injection. setsid() detaches the sandbox from the
-# controlling terminal, so the pty's foreground process group (bwrap itself)
-# receives SIGWINCH and the sandboxed child never does. Node only refreshes
-# its tty dimensions from SIGWINCH, so pi (and vim, htop, ...) never learn the
-# terminal was resized and the screen stops redrawing correctly.
-#
-# `--new-session` exists to stop a sandboxed process injecting keystrokes into
-# your shell via the TIOCSTI ioctl (CVE-2017-5226). Linux 6.2 added the
-# /proc/sys/dev/tty/legacy_tiocsti knob; when it reads 0 the kernel denies
-# TIOCSTI to anything without CAP_SYS_ADMIN in the initial user namespace, so
-# the flag buys nothing. Kernels/distros without that knob still get
-# --new-session (safe, but no resize handling).
-#   BWPI_NEW_SESSION=1  force --new-session on (pre-6.2 kernels)
-#   BWPI_NEW_SESSION=0  force it off (resize works, TIOCSTI unprotected)
-function bwpi() {
-	if ! command -v bwrap > /dev/null 2>&1; then
-		echo "bwpi: bwrap not found in PATH" >&2;
-		return 1;
-	fi;
-
-	local piBin;
-	piBin="$(command -v pi || echo "$HOME/bin/pi")";
-
-	local npmCacheDir="${BWPI_NPM_CACHE:-$HOME/.pi/cache/npm}";
-	mkdir -p "$npmCacheDir";
-
-	local workspace="$PWD";
-	local workMode="--bind";
-	local netArgs=();
-	local extraArgs=();
-	local sessionArgs=();
-	case "${BWPI_NEW_SESSION:-auto}" in
-		0) ;;
-		1) sessionArgs=(--new-session);;
-		*)
-			# No knob (kernel < 6.2) or TIOCSTI still permitted: stay safe.
-			if [ "$(cat /proc/sys/dev/tty/legacy_tiocsti 2> /dev/null)" != "0" ]; then
-				sessionArgs=(--new-session);
-			fi;;
-	esac;
-	while [ $# -gt 0 ]; do
-		case "$1" in
-			--ro) workMode="--ro-bind"; shift;;
-			--rw) workMode="--bind"; shift;;
-			--work) workspace="$2"; shift 2;;
-			--work=*) workspace="${1#--work=}"; shift;;
-			--rw-path) extraArgs+=(--bind "$2" "$2"); shift 2;;
-			--no-net) netArgs=(--unshare-net); shift;;
-			--) shift; break;;
-			*) break;;
-		esac;
-	done;
-
-	# Not `exec`: exec would replace the interactive shell with bwrap, so the
-	# terminal window/session dies along with pi. Running bwrap as a child lets
-	# the shell reclaim the terminal and print a fresh prompt afterwards.
-	bwrap \
-		--ro-bind / / \
-		--tmpfs /tmp \
-		--dev /dev --proc /proc \
-		--bind "$HOME/.pi" "$HOME/.pi" \
-		"$workMode" "$workspace" "$workspace" \
-		"${extraArgs[@]}" \
-		--unshare-pid --unshare-ipc --unshare-uts \
-		"${netArgs[@]}" \
-		"${sessionArgs[@]}" --die-with-parent \
-		--chdir "$workspace" \
-		--setenv HOME "$HOME" \
-		--setenv npm_config_cache "$npmCacheDir" \
-		"$piBin" "$@";
 }

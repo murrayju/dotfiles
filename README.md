@@ -32,12 +32,18 @@ The new bootstrap system will:
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Set up the modern Neovim configuration
 
+On Linux the bootstrap does **not** install distro packages. Do that once, separately (it needs sudo):
+
+```bash
+cd ~/.dotfiles && ./bs apt
+```
+
 ### Git-free install
 
 To install these dotfiles without Git:
 
 ```bash
-cd; curl -#L https://github.com/murrayju/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,bootstrap.js,.macos,LICENSE-MIT.txt} && ./bs
+cd; curl -#L https://github.com/murrayju/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,macos.sh,LICENSE-MIT.txt} && ./bs
 ```
 
 To update later on, just run that command again.
@@ -84,17 +90,46 @@ git config --file ~/.gitconfig.local user.email "me@work.example"
 When setting up a new Mac, you may want to set some sensible macOS defaults:
 
 ```bash
-./.macos
+./macos.sh
 ```
 
-### Packages: Homebrew and mise
+### Packages: Homebrew, apt, and mise
 
-The bootstrap uses two package managers, on both macOS and Linux:
+The bootstrap uses three package managers:
 
-- **Homebrew** (`Brewfile`): shells, GNU utilities, libraries, fonts, and apps. Casks are only installed on macOS.
+- **Homebrew** (`Brewfile`): system tools, libraries, fonts, and apps. The file is a Ruby DSL with `if OS.mac?` / `if OS.linux?` blocks, so `brew bundle --file Brewfile` is valid on either platform. macOS gets the GNU userland and casks; Linux gets only what Homebrew is genuinely best at (fonts), because anything with system integration has to come from the distro.
+- **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 
-The shell config loads Homebrew first and activates mise last, so mise tools take priority.
+Path order matters. On macOS, Homebrew is prepended to `$PATH` so its modern GNU tools win. On Linux it is **appended**, because Homebrew's `bin` directory also contains duplicates of `gpg`, `ssh`, `python3`, `curl`, `sed`, `grep`, `dbus-*` and friends — and those must keep resolving to the distro's copies so they talk to the system's agents and services (most notably Ubuntu's systemd-managed `gpg-agent`, which breaks commit signing when a different `gpg` version talks to it). Tools you do want from Homebrew on Linux should be symlinked into `~/.local/bin`, which is ahead of everything. mise activates last, so mise tools beat both.
+
+### Migrating an existing Linux install
+
+Because the Linux branch of the `Brewfile` no longer installs anything that duplicates distro tools, previously installed formulae stay behind as dead weight (they no longer shadow anything, since Homebrew is appended to `$PATH`):
+
+```bash
+# Check for dependents first; only remove what nothing else needs.
+brew uses --installed gnupg openssh screen php grep findutils coreutils gnu-sed
+brew uninstall gnupg openssh screen php grep findutils coreutils gnu-sed
+
+# Let the system gpg-agent take over again (note: /usr/bin/gpgconf).
+/usr/bin/gpgconf --kill gpg-agent
+/usr/bin/gpg --list-secret-keys   # then test a signed commit
+```
+
+Finally, make sure `brew shellenv` is **not** left in `~/.extra`, `~/.profile`, or `~/.bashrc`. On Linux that re-prepends Homebrew and undoes the ordering above — which is exactly what makes `gpg` and `ssh` talk to the wrong agents.
+
+### Platform-specific shell configuration
+
+Shell config is layered. Each shared file is followed by a per-OS companion that `$OSTYPE`-detects at source time:
+
+| Shared | macOS | Linux |
+| --- | --- | --- |
+| `.exports` | `.exports_darwin` | `.exports_linux` |
+| `.aliases` | `.aliases_darwin` | `.aliases_linux` |
+| `.functions` | `.functions_darwin` | `.functions_linux` |
+
+So an alias that only works on macOS (Finder, `defaults`, `pbcopy`, Spotlight) belongs in `.aliases_darwin`, and one that only works on Linux (bwrap, `ip`, `loginctl`) belongs in `.aliases_linux` / `.functions_linux`. `.extra` is sourced last and always wins. New OS-specific files are picked up automatically by the bootstrap symlinks; no bootstrap change is needed.
 
 ## Feedback
 

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Linux-only environment settings.
+
+# Use a UTF-8 locale that every distro has, including minimal container
+# images. Deliberately not `en_US.UTF-8`: if that locale is not generated,
+# every process prints a setlocale warning. Set LC_ALL yourself in ~/.extra if
+# you want a specific locale.
+export LANG='C.UTF-8'
+
+# Do not prepend Homebrew to $PATH on Linux. Homebrew's bin directory holds
+# duplicates of core system tools (gpg, ssh, python3, perl, curl, openssl, sed,
+# grep, dbus-*, gsettings, ...) that must keep resolving to the distro's copies
+# so they talk to the system's agents and services. The shell init files append
+# Homebrew instead; tools that should come from Homebrew get symlinked into
+# ~/.local/bin (which is ahead of everything).

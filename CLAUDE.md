@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository based on Mathias Bynens' dotfiles, providing comprehensive development environment configurations for macOS. The repository uses a modular approach with separate files for different aspects of shell configuration and includes a modern Neovim setup with LSP support.
+This is a personal dotfiles repository based on Mathias Bynens' dotfiles, providing comprehensive development environment configurations for macOS and Linux. The repository uses a modular approach with separate files for different aspects of shell configuration, an OS overlay for each shared file, and includes a modern Neovim setup with LSP support.
 
 ## Key Commands
 
@@ -16,8 +16,11 @@ git clone https://github.com/murrayju/dotfiles.git ~/.dotfiles && cd ~/.dotfiles
 # Update existing installation (also installs the Brewfile and mise tools)
 cd ~/.dotfiles && ./bs
 
+# Linux only: install the distro packages the dotfiles rely on (needs sudo)
+cd ~/.dotfiles && ./bs apt
+
 # Configure macOS system preferences (requires admin privileges)
-./.macos
+./macos.sh
 ```
 
 ### Development
@@ -37,6 +40,7 @@ alias
 ### Core Configuration System
 - **Main shell files**: `.bash_profile`, `.zshrc` handle shell initialization
 - **Modular components**: `.aliases`, `.functions`, `.exports` provide specific functionality
+- **OS overlays**: `.aliases_darwin`/`.aliases_linux`, `.functions_darwin`/`.functions_linux`, `.exports_darwin`/`.exports_linux` are sourced right after their shared counterpart, based on `$OSTYPE`. Anything platform-specific (Finder/`defaults`/`pbcopy` on macOS, `ip`/`loginctl`/bwrap on Linux) goes in the overlay, never in the shared file.
 - **Local customization**: `~/.extra` and `~/.path` for machine-specific settings (not tracked)
 - **Cross-platform**: `win/` directory contains Windows-specific configurations
 
@@ -47,11 +51,21 @@ alias
 - `.inputrc` - Readline configuration for better command line editing
 
 ### Installation System
-- `bootstrap.js` - Modern JavaScript-based installation script using build-strap-cli
+- `targets/bootstrap.ts` - Modern JavaScript-based installation script using build-strap-cli
+- `targets/apt.ts` - `./bs apt`; installs `packages/apt.txt` via apt-get (Linux only, opt-in, needs sudo)
 - `bs` - Bootstrap entrypoint script from build-strap-cli
-- `Brewfile` - System tools, libraries, and apps via Homebrew (macOS and Linux)
+- `Brewfile` - System tools, libraries, and apps via Homebrew, with `if OS.mac?` / `if OS.linux?` blocks. On Linux it intentionally avoids anything that would shadow distro tools or system services.
+- `packages/apt.txt` - Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …)
 - `dotfiles/.config/mise/config.toml` - Global developer tools via mise (Node, Go, Neovim, ripgrep, and more)
-- `.macos` - Configures macOS system preferences and Finder settings
+- `macos.sh` - Configures macOS system preferences and Finder settings
+
+### PATH precedence
+macOS prepends Homebrew to `$PATH`; Linux **appends** it (see the brew block in `.bash_profile`/`.zshrc`) so `gpg`, `ssh`, `python3`, `curl`, `sed`, `grep` and the dbus/glib tools keep resolving to the distro's copies. mise activates last. Changing this ordering is what caused the gpg-agent/commit-signing breakage on Linux — don't "fix" it back to `brew shellenv`-only.
+
+### Package manager split
+- Homebrew: fonts/apps and macOS-only GNU userland
+- apt (`./bs apt`): anything with system integration on Linux
+- mise: language runtimes and dev CLIs (never duplicate these in the Brewfile)
 
 ### Plugin Management
 - **Neovim**: Uses lazy.nvim for modern plugin management with LSP support

@@ -55,18 +55,41 @@ function zvm_config() {
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker yarn mercurial vi-mode)
+plugins=(git docker yarn vi-mode)
 
 # User configuration
 
 # Load Homebrew. Look in the default install paths for macOS and Linux.
 for brew_bin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew "$HOME/.linuxbrew/bin/brew"; do
   if [ -x "$brew_bin" ]; then
-    eval "$("$brew_bin" shellenv zsh)"
+    brew_prefix="$(dirname "$(dirname "$brew_bin")")"
+    case "$OSTYPE" in
+      darwin*)
+        # On macOS, Homebrew provides the modern GNU userland, so put it ahead
+        # of the ancient tools that ship with the OS.
+        eval "$("$brew_bin" shellenv zsh)"
+        ;;
+      *)
+        # On Linux, append instead of prepend. Homebrew's bin directory holds
+        # duplicates of core system tools (gpg, ssh, python3, perl, curl,
+        # openssl, sed, grep, dbus-*, gsettings, ...) and those must keep
+        # resolving to the distro's copies so they talk to the system's agents
+        # and services. Symlink the few tools you want from Homebrew into
+        # ~/.local/bin, which is ahead of everything else.
+        export HOMEBREW_PREFIX="$brew_prefix"
+        export HOMEBREW_CELLAR="$HOMEBREW_PREFIX/Cellar"
+        export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX/Homebrew"
+        case ":$PATH:" in
+          *":$HOMEBREW_PREFIX/bin:"*) ;;
+          *) PATH="$PATH:$HOMEBREW_PREFIX/bin:$HOMEBREW_PREFIX/sbin" ;;
+        esac
+        export PATH
+        ;;
+    esac
     break
   fi
 done
-unset brew_bin
+unset brew_bin brew_prefix
 
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -76,13 +99,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-export EDITOR='vim'
+# Preferred editor for local and remote sessions; ~/.exports sets EDITOR.
 
 # Activate mise before the shell dotfiles, so that they can find mise tools.
 # mise puts its tools before ~/.local/bin, so they come before the Homebrew tools.
@@ -90,13 +107,25 @@ if command -v mise >/dev/null 2>&1; then
   eval "$(mise activate zsh)"
 fi
 
-# Load the shell dotfiles, and then some:
+# Load the shell dotfiles, and then some. Each shared file is followed by its
+# per-OS companion (`.aliases_darwin` / `.aliases_linux`), so the OS layer can
+# override the shared layer but never the other way around.
 # * ~/.path can be used to extend `$PATH`.
 # * ~/.extra can be used for other settings you don’t want to commit.
-for file in ~/.{path,exports,aliases,functions,extra,zsh_extra}; do
+case "$OSTYPE" in
+  darwin*) dotfiles_os=darwin ;;
+  linux*) dotfiles_os=linux ;;
+  *) dotfiles_os=other ;;
+esac
+export DOTFILES_OS="$dotfiles_os"
+
+for file in ~/.path ~/.exports ~/".exports_$dotfiles_os" \
+            ~/.aliases ~/".aliases_$dotfiles_os" \
+            ~/.functions ~/".functions_$dotfiles_os" \
+            ~/.extra ~/.zsh_extra; do
   [ -r "$file" ] && [ -f "$file" ] && source "$file"
 done
-unset file
+unset file dotfiles_os
 
 # start typing + [Up-Arrow] - fuzzy find history forward
 if [[ "${terminfo[kcuu1]}" != "" ]]; then
@@ -112,4 +141,6 @@ if [[ "${terminfo[kcud1]}" != "" ]]; then
 fi
 
 # use starship as prompt
-eval "$(starship init zsh)"
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi

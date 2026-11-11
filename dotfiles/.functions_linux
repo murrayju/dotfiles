@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+# Linux-only shell functions. Sourced by .bash_profile and .zshrc after
+# .functions, only when $OSTYPE is linux.
+
+# Normalize `open` for the shared `o` function (and anything else that calls
+# `open`): WSL uses the Windows explorer, everything else xdg-open.
+if grep -qi Microsoft /proc/version 2> /dev/null; then
+  # Ubuntu on Windows using the Linux subsystem
+  alias open='explorer.exe'
+elif command -v xdg-open > /dev/null 2>&1; then
+  alias open='xdg-open'
+fi
+
+# Run the `pi` coding agent inside a bubblewrap (bwrap) jail so it can only
+# write to the working directory and its own ~/.pi state; the rest of the
+# filesystem is mounted read-only and /tmp is a private tmpfs. Network is
+# shared by default so pi can reach model providers. Requires an AppArmor
+# profile granting unprivileged user namespaces to bwrap.
+#
+# Usage: bwpi [--ro|--rw] [--work <dir>] [--rw-path <dir>] [--no-net] [--] [<pi args>...]
+#   --ro           mount the working directory read-only (default: writable)
+#   --rw           mount the working directory read-write (default)
+#   --work <dir>   use <dir> as the working directory (default: $PWD)
+#   --rw-path <d>  additionally mount <dir> read-write
+#   --no-net       run without network access
+#
+# npm/npx cache: MCP servers configured with `npx` (see ~/.pi/agent/mcp.json)
+# need a *writable* npm cache, otherwise npm aborts while creating
+# ~/.npm/_cacache/tmp with EROFS. Rather than mounting the host ~/.npm
+# read-write -- which also holds _npx installs that later run unsandboxed, so
+# a sandboxed process could plant code there -- npm is pointed at a
+# sandbox-owned cache under ~/.pi. Use BWPI_NPM_CACHE="$HOME/.npm" together
+# with `--rw-path "$HOME/.npm"` to share the host cache instead (faster,
+# reuses tarballs already downloaded). Note that `--no-net` only works for
+# packages already present in the cache, and that the sandbox has its own
+# network namespace, so in-jail 127.0.0.1 is not the host's localhost.
+#
+#   BWPI_NPM_CACHE  npm cache directory handed to the sandbox
+#
+# NOTE: `--new-session` is intentionally omitted when the kernel already
+# blocks TIOCSTI input injection. setsid() detaches the sandbox from the
+# controlling terminal, so the pty's foreground process group (bwrap itself)
+# receives SIGWINCH and the sandboxed child never does. Node only refreshes
+# its tty dimensions from SIGWINCH, so pi (and vim, htop, ...) never learn the
+# terminal was resized and the screen stops redrawing correctly.
+#
+# `--new-session` exists to stop a sandboxed process injecting keystrokes into
+# your shell via the TIOCSTI ioctl (CVE-2017-5226). Linux 6.2 added the
+# /proc/sys/dev/tty/legacy_tiocsti knob; when it reads 0 the kernel denies
+# TIOCSTI to anything without CAP_SYS_ADMIN in the initial user namespace, so
+# the flag buys nothing. Kernels/distros without that knob still get
+# --new-session (safe, but no resize handling).
+#   BWPI_NEW_SESSION=1  force --new-session on (pre-6.2 kernels)
+#   BWPI_NEW_SESSION=0  force it off (resize works, TIOCSTI unprotected)
+function bwpi() {
+	if ! command -v bwrap > /dev/null 2>&1; then
+		echo "bwpi: bwrap not found in PATH" >&2;
+		return 1;
+	fi;
+
+	local piBin;
+	piBin="$(command -v pi || echo "$HOME/bin/pi")";
+
+	local npmCacheDir="${BWPI_NPM_CACHE:-$HOME/.pi/cache/npm}";
+	mkdir -p "$npmCacheDir";
+
+	local workspace="$PWD";
+	local workMode="--bind";
+	local netArgs=();
+	local extraArgs=();
+	local sessionArgs=();
+	case "${BWPI_NEW_SESSION:-auto}" in
+		0) ;;
+		1) sessionArgs=(--new-session);;
+		*)
+			# No knob (kernel < 6.2) or TIOCSTI still permitted: stay safe.
+			if [ "$(cat /proc/sys/dev/tty/legacy_tiocsti 2> /dev/null)" != "0" ]; then
+				sessionArgs=(--new-session);
+			fi;;
+	esac;
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			--ro) workMode="--ro-bind"; shift;;
+			--rw) workMode="--bind"; shift;;
+			--work) workspace="$2"; shift 2;;
+			--work=*) workspace="${1#--work=}"; shift;;
+			--rw-path) extraArgs+=(--bind "$2" "$2"); shift 2;;
+			--no-net) netArgs=(--unshare-net); shift;;
+			--) shift; break;;
+			*) break;;
+		esac;
+	done;
+
+	# Not `exec`: exec would replace the interactive shell with bwrap, so the
+	# terminal window/session dies along with pi. Running bwrap as a child lets
+	# the shell reclaim the terminal and print a fresh prompt afterwards.
+	bwrap \
+		--ro-bind / / \
+		--tmpfs /tmp \
+		--dev /dev --proc /proc \
+		--bind "$HOME/.pi" "$HOME/.pi" \
+		"$workMode" "$workspace" "$workspace" \
+		"${extraArgs[@]}" \
+		--unshare-pid --unshare-ipc --unshare-uts \
+		"${netArgs[@]}" \
+		"${sessionArgs[@]}" --die-with-parent \
+		--chdir "$workspace" \
+		--setenv HOME "$HOME" \
+		--setenv npm_config_cache "$npmCacheDir" \
+		"$piBin" "$@";
+}

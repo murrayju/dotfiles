@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Linux-only aliases. Sourced after .aliases.
+# These assume the distro tools from `./bs apt` (iproute2, systemd, alsa/pulse).
+
+# Update distro packages, Homebrew, mise, and global npm packages.
+alias update='sudo apt-get update; sudo apt-get upgrade -y; sudo apt-get autoremove -y; brew update; brew upgrade; brew cleanup; mise self-update -y; mise upgrade; mise prune -y; npm install npm -g; npm update -g'
+
+# IP addresses (`ip` replaces macOS’s `ipconfig`/`ifconfig`)
+localip() {
+  ip -4 route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}'
+}
+alias ips="ip -brief address show scope global"
+
+# Show active network interfaces
+alias ifactive="ip -brief link show up"
+
+# Flush the resolver cache
+flush() {
+  if command -v resolvectl >/dev/null 2>&1; then
+    sudo resolvectl flush-caches
+  elif command -v systemd-resolve >/dev/null 2>&1; then
+    sudo systemd-resolve --flush-caches
+  else
+    echo "flush: neither resolvectl nor systemd-resolve found" >&2
+    return 1
+  fi
+}
+
+# Trim new lines and copy to clipboard. Wayland first, then X11.
+c() {
+  if [ -n "${WAYLAND_DISPLAY:-}" ] && command -v wl-copy >/dev/null 2>&1; then
+    wl-copy
+  elif command -v xclip >/dev/null 2>&1; then
+    xclip -selection clipboard
+  else
+    echo "c: install wl-clipboard or xclip" >&2
+    return 1
+  fi
+}
+
+# Mute the default audio sink
+stfu() {
+  if command -v pactl >/dev/null 2>&1; then
+    pactl set-sink-mute @DEFAULT_SINK@ 1
+  elif command -v amixer >/dev/null 2>&1; then
+    amixer set Master mute
+  else
+    echo "stfu: neither pactl nor amixer found" >&2
+    return 1
+  fi
+}
+
+# Lock the screen (when going AFK)
+alias afk="loginctl lock-session"
+
+# Move files to the trash instead of deleting them
+alias trash="gio trash"
