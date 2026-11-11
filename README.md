@@ -109,6 +109,8 @@ Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `
 
 Path order matters. On macOS, Homebrew is prepended to `$PATH` so its modern GNU tools win. On Linux it is **appended**, because Homebrew's `bin` directory also contains duplicates of `gpg`, `ssh`, `python3`, `curl`, `sed`, `grep`, `dbus-*` and friends — and those must keep resolving to the distro's copies so they talk to the system's agents and services (most notably Ubuntu's systemd-managed `gpg-agent`, which breaks commit signing when a different `gpg` version talks to it). Tools you do want from Homebrew on Linux should be symlinked into `~/.local/bin`, which is ahead of everything. mise activates last, so mise tools beat both.
 
+For the same reason, the bootstrap appends the Linux Homebrew prefixes to its own process `$PATH` before it runs the installer (`putLinuxBrewOnProcessPath` in `targets/bootstrap.ts`). The installer only prints its "`/home/linuxbrew/.linuxbrew/bin` is not in your PATH" warning — and points at the `Next steps` snippet — when the prefix is missing from `$PATH` at install time, and following that snippet on Linux is exactly what breaks the ordering above. Seeding it also means `build-strap` finds `brew` by itself afterwards instead of appending `eval "$(brew shellenv)"` to the (symlinked) `.zshrc`.
+
 ### Migrating an existing Linux install
 
 Because the Linux branch of the `Brewfile` no longer installs anything that duplicates distro tools, previously installed formulae stay behind as dead weight (they no longer shadow anything, since Homebrew is appended to `$PATH`):

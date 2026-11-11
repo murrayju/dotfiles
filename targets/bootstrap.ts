@@ -15,6 +15,45 @@ const BACKUP_DIR: string = path.join(HOME_DIR, '.dotfiles_backup');
 // The mise.run installer puts mise here.
 const MISE_BIN: string = path.join(HOME_DIR, '.local/bin/mise');
 
+// Where the Linux Homebrew installer can put its prefix. The first is the
+// installer's default; the second is the per-user fallback that the shell
+// config in .bash_profile/.zshrc also looks for.
+const LINUX_BREW_PREFIXES: string[] = [
+  '/home/linuxbrew/.linuxbrew',
+  path.join(HOME_DIR, '.linuxbrew'),
+];
+
+/**
+ * Put the Homebrew prefix on this process's `PATH` before the installer runs.
+ *
+ * The Linux installer only prints its "`<prefix>/bin` is not in your PATH"
+ * warning when the prefix is missing from `$PATH` at install time, and the
+ * remedy it points at is a shell-profile snippet that re-prepends Homebrew. On
+ * Linux that undoes the distro-first ordering in .bash_profile/.zshrc, so it is
+ * better not to provoke it. The installer and `brew bundle` inherit
+ * `process.env`, and build-strap then finds `brew` by itself instead of
+ * appending `eval "$(brew shellenv)"` to the real shell config. The
+ * directories are appended, not prepended, so they never shadow distro tools.
+ */
+function putLinuxBrewOnProcessPath(): void {
+  if (os.platform() !== 'linux') {
+    return;
+  }
+  const brewDirs = LINUX_BREW_PREFIXES.flatMap((prefix) => [
+    path.join(prefix, 'bin'),
+    path.join(prefix, 'sbin'),
+  ]);
+  // Drop empty segments, so that an unset or blank `PATH` does not gain a
+  // leading entry that would put the current directory on it.
+  const pathDirs = (process.env.PATH ?? '')
+    .split(path.delimiter)
+    .filter(Boolean);
+  const missingDirs = brewDirs.filter((dir) => !pathDirs.includes(dir));
+  if (missingDirs.length > 0) {
+    process.env.PATH = [...pathDirs, ...missingDirs].join(path.delimiter);
+  }
+}
+
 interface DiffResult {
   diffLines: number;
   error?: boolean;
@@ -236,6 +275,7 @@ export default async function main() {
   installTmuxPluginManager();
 
   console.log('\n🍺 Installing Homebrew and Brewfile...');
+  putLinuxBrewOnProcessPath();
   await ensureBrewInstalled();
   await ensureBrewfileInstalled(path.join(__dirname, '..', 'Brewfile'));
 
