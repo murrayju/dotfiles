@@ -225,6 +225,19 @@ function tfa() {
 #   --rw-path <d>  additionally mount <dir> read-write
 #   --no-net       run without network access
 #
+# npm/npx cache: MCP servers configured with `npx` (see ~/.pi/agent/mcp.json)
+# need a *writable* npm cache, otherwise npm aborts while creating
+# ~/.npm/_cacache/tmp with EROFS. Rather than mounting the host ~/.npm
+# read-write -- which also holds _npx installs that later run unsandboxed, so
+# a sandboxed process could plant code there -- npm is pointed at a
+# sandbox-owned cache under ~/.pi. Use BWPI_NPM_CACHE="$HOME/.npm" together
+# with `--rw-path "$HOME/.npm"` to share the host cache instead (faster,
+# reuses tarballs already downloaded). Note that `--no-net` only works for
+# packages already present in the cache, and that the sandbox has its own
+# network namespace, so in-jail 127.0.0.1 is not the host's localhost.
+#
+#   BWPI_NPM_CACHE  npm cache directory handed to the sandbox
+#
 # NOTE: `--new-session` is intentionally omitted when the kernel already
 # blocks TIOCSTI input injection. setsid() detaches the sandbox from the
 # controlling terminal, so the pty's foreground process group (bwrap itself)
@@ -248,6 +261,9 @@ function bwpi() {
 
 	local piBin;
 	piBin="$(command -v pi || echo "$HOME/bin/pi")";
+
+	local npmCacheDir="${BWPI_NPM_CACHE:-$HOME/.pi/cache/npm}";
+	mkdir -p "$npmCacheDir";
 
 	local workspace="$PWD";
 	local workMode="--bind";
@@ -291,5 +307,6 @@ function bwpi() {
 		"${sessionArgs[@]}" --die-with-parent \
 		--chdir "$workspace" \
 		--setenv HOME "$HOME" \
+		--setenv npm_config_cache "$npmCacheDir" \
 		"$piBin" "$@";
 }
