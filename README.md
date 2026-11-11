@@ -8,7 +8,7 @@
 
 ### Using Git and the modern bootstrap system
 
-You can clone the repository wherever you want (I like to keep it in `~/.dotfiles`). The modern bootstrapper uses JavaScript and will automatically handle Node.js installation, symlink creation, and backup of existing files.
+You can clone the repository wherever you want (I like to keep it in `~/.dotfiles`). The modern bootstrapper is TypeScript run by [Bun](https://bun.sh); `./bs` fetches a pinned Bun with [bun-strap](https://github.com/murrayju/bun-strap), so nothing has to be installed globally. It then installs dependencies, creates symlinks, and backs up existing files.
 
 #### macOS/Linux
 
@@ -24,7 +24,7 @@ cd ~/.dotfiles && ./bs
 
 The new bootstrap system will:
 
-- Automatically install Node.js if needed using build-strap-cli
+- Download a pinned Bun into `download/bun/` using bun-strap (no global Node.js, Bun, or package manager needed)
 - Create symlinks from the repository to your home directory
 - Back up any existing files that differ from the repository versions
 - Install Oh My Zsh, Powerlevel10k theme, and Tmux Plugin Manager
@@ -104,6 +104,8 @@ The bootstrap uses three package managers:
 - **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 - **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
+
+Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `typescript`, `prettier`) is installed by **bun** into `node_modules` from `package.json` and `bun.lock`. Bun itself is not a prerequisite: `./bun` is a [bun-strap](https://github.com/murrayju/bun-strap) copy that downloads the pinned version into `download/bun/`. The shell config adds a `bun` function that prefers a project-local `./bun` and otherwise falls back to the globally installed one.
 
 Path order matters. On macOS, Homebrew is prepended to `$PATH` so its modern GNU tools win. On Linux it is **appended**, because Homebrew's `bin` directory also contains duplicates of `gpg`, `ssh`, `python3`, `curl`, `sed`, `grep`, `dbus-*` and friends — and those must keep resolving to the distro's copies so they talk to the system's agents and services (most notably Ubuntu's systemd-managed `gpg-agent`, which breaks commit signing when a different `gpg` version talks to it). Tools you do want from Homebrew on Linux should be symlinked into `~/.local/bin`, which is ahead of everything. mise activates last, so mise tools beat both.
 

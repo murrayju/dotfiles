@@ -54,10 +54,12 @@ alias
 - `.inputrc` - Readline configuration for better command line editing
 
 ### Installation System
-- `targets/bootstrap.ts` - Modern JavaScript-based installation script using build-strap-cli
+- `targets/bootstrap.ts` - Installation script, TypeScript run directly by Bun
 - `targets/apt.ts` - `./bs apt`; installs `packages/apt.txt` via apt-get (Linux only, opt-in, needs sudo)
 - `targets/pi.ts` - `./bs pi`; installs pi from https://pi.dev/install.sh when missing. The installer is interactive, so it is spawned `detached` (no controlling terminal) to make it take its default action without prompting; node/npm come from the mise shims.
-- `bs` - Bootstrap entrypoint script from build-strap-cli
+- `bun` - Pinned [bun-strap](https://github.com/murrayju/bun-strap) launcher; downloads Bun into `download/bun/<version>` on first use, so no global runtime is required. Bump the version inside it deliberately.
+- `bs` - Bootstrap entrypoint: `./bun install` then `./bun ./targets/run.ts "$@"` (run from anywhere; it cds to the repo first)
+- `package.json` / `bun.lock` - Build tooling dependencies (`build-strap`, `fs-extra`, `typescript`, `prettier`); `bun.lock` is committed
 - `Brewfile` - System tools, libraries, and apps via Homebrew, with `if OS.mac?` / `if OS.linux?` blocks. On Linux it intentionally avoids anything that would shadow distro tools or system services.
 - `packages/apt.txt` - Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …)
 - `dotfiles/.config/mise/config.toml` - Global developer tools via mise (Node, Go, Neovim, ripgrep, and more)
@@ -70,6 +72,7 @@ macOS prepends Homebrew to `$PATH`; Linux **appends** it (see the brew block in 
 - Homebrew: fonts/apps and macOS-only GNU userland
 - apt (`./bs apt`): anything with system integration on Linux
 - mise: language runtimes and dev CLIs (never duplicate these in the Brewfile)
+- bun (via `./bun`): the dotfiles' own build tooling only; never a prerequisite, since bun-strap downloads it
 
 ### Plugin Management
 - **Neovim**: Uses lazy.nvim for modern plugin management with LSP support

@@ -1,6 +1,4 @@
 download/
-node*
 node_modules/
 prompt.md
-yarn*
 .claude/*.local.*

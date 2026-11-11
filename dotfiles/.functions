@@ -5,6 +5,16 @@ function mkd() {
 	mkdir -p "$@" && cd "$_";
 }
 
+# Prefer the project-local bun from https://github.com/murrayju/bun-strap, which
+# pins the version per project, and fall back to the globally installed one.
+function bun() {
+	if [ -x ./bun ]; then
+		./bun "$@";
+	else
+		command bun "$@";
+	fi;
+}
+
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
 function targz() {
 	local tmpFile="${@%/}.tar";

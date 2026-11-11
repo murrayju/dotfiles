@@ -2,13 +2,9 @@
   "name": "dotfiles",
   "version": "1.0.0",
   "description": "Personal dotfiles configuration",
-  "main": "bootstrap.ts",
-  "buildStrap": {
-    "nodeVersion": "22.16.0",
-    "yarnVersion": "1.22.22"
-  },
+  "main": "targets/run.ts",
   "scripts": {
-    "target": "tsx ./targets/run.ts",
+    "target": "./bun ./targets/run.ts",
     "start": "./bs start"
   },
   "keywords": [
@@ -19,15 +15,13 @@
   "author": "Justin Murray",
   "license": "MIT",
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.2",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^22",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.3"
+    "@types/node": "^26.6.6",
+    "prettier": "^3.10.0",
+    "typescript": "^7.0.2"
   },
   "dependencies": {
-    "build-strap": "^5.0.7",
-    "fs-extra": "^11.3.0",
-    "tsx": "^4.20.3"
+    "build-strap": "^6.3.0",
+    "fs-extra": "^11.4.1"
   }
 }

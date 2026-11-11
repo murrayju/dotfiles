@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# recommended to pin to a specific version
+# See https://github.com/oven-sh/bun/tags
+version="bun-v1.4.4"
+# Override the pin for a one-off run with BUN_VERSION, e.g.
+# BUN_VERSION=bun-v1.5.0 ./bun --version
+version=${BUN_VERSION:-$version}
+downloadDir=$(pwd)/download/bun/${version}
+bunCmd="$downloadDir/bin/bun"
+
+if [ ! -f "$bunCmd" ]; then
+    echo Installing bun to "$bunCmd"
+    bashArgs=()
+    if [ "$version" != "latest" ]; then
+        bashArgs=(-s "$version")
+    fi
+    # Override SHELL so the installer's `case $(basename "$SHELL")` falls through
+    # to its default branch, which only prints manual instructions instead of
+    # appending BUN_INSTALL/PATH exports to ~/.bashrc (or .zshrc / config.fish).
+    # We invoke bun via its explicit path, so we don't need those PATH edits.
+    curl -fsSL https://bun.sh/install | SHELL="" BUN_INSTALL="$downloadDir" bash "${bashArgs[@]}"
+fi
+
+exec "$bunCmd" "$@"
