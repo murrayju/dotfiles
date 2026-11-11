@@ -19,6 +19,9 @@ cd ~/.dotfiles && ./bs
 # Linux only: install the distro packages the dotfiles rely on (needs sudo)
 cd ~/.dotfiles && ./bs apt
 
+# Install or re-check pi (the bootstrap does this too)
+cd ~/.dotfiles && ./bs pi
+
 # Configure macOS system preferences (requires admin privileges)
 ./macos.sh
 ```
@@ -53,6 +56,7 @@ alias
 ### Installation System
 - `targets/bootstrap.ts` - Modern JavaScript-based installation script using build-strap-cli
 - `targets/apt.ts` - `./bs apt`; installs `packages/apt.txt` via apt-get (Linux only, opt-in, needs sudo)
+- `targets/pi.ts` - `./bs pi`; installs pi from https://pi.dev/install.sh when missing. The installer is interactive, so it is spawned `detached` (no controlling terminal) to make it take its default action without prompting; node/npm come from the mise shims.
 - `bs` - Bootstrap entrypoint script from build-strap-cli
 - `Brewfile` - System tools, libraries, and apps via Homebrew, with `if OS.mac?` / `if OS.linux?` blocks. On Linux it intentionally avoids anything that would shadow distro tools or system services.
 - `packages/apt.txt` - Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …)

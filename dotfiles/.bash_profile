@@ -31,7 +31,7 @@ done
 unset brew_bin brew_prefix
 
 # Add `~/bin` to the `$PATH`
-export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.pi/agent/bin:$PATH"
 
 # Activate mise before the shell dotfiles, so that they can find mise tools.
 # mise puts its tools before ~/.local/bin, so they come before the Homebrew tools.

@@ -4,6 +4,7 @@ import { execSync } from 'child_process';
 import * as os from 'os';
 import { fileURLToPath } from 'url';
 import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
+import installPi from './pi.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -185,6 +186,9 @@ export default async function main() {
 
   console.log('\n🧰 Installing mise and its tools...');
   installMiseTools();
+
+  console.log('\n🤖 Installing pi...');
+  await installPi();
 
   console.log('\n✅ Bootstrap completed!');
   console.log('\nNext steps:');

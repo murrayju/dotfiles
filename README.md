@@ -30,6 +30,7 @@ The new bootstrap system will:
 - Install Oh My Zsh, Powerlevel10k theme, and Tmux Plugin Manager
 - Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
+- Install [pi](https://pi.dev/) if it is not already installed
 - Set up the modern Neovim configuration
 
 On Linux the bootstrap does **not** install distro packages. Do that once, separately (it needs sudo):
@@ -37,6 +38,8 @@ On Linux the bootstrap does **not** install distro packages. Do that once, separ
 ```bash
 cd ~/.dotfiles && ./bs apt
 ```
+
+The pi installer is normally interactive; the bootstrap runs it without a controlling terminal, which makes it take its default action and install noninteractively. Re-run it on its own with `./bs pi`. The shell config puts `~/.pi/agent/bin` on `$PATH`, so a freshly installed pi is usable after `reload`.
 
 ### Git-free install
 
@@ -100,6 +103,7 @@ The bootstrap uses three package managers:
 - **Homebrew** (`Brewfile`): system tools, libraries, fonts, and apps. The file is a Ruby DSL with `if OS.mac?` / `if OS.linux?` blocks, so `brew bundle --file Brewfile` is valid on either platform. macOS gets the GNU userland and casks; Linux gets only what Homebrew is genuinely best at (fonts), because anything with system integration has to come from the distro.
 - **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
+- **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
 
 Path order matters. On macOS, Homebrew is prepended to `$PATH` so its modern GNU tools win. On Linux it is **appended**, because Homebrew's `bin` directory also contains duplicates of `gpg`, `ssh`, `python3`, `curl`, `sed`, `grep`, `dbus-*` and friends — and those must keep resolving to the distro's copies so they talk to the system's agents and services (most notably Ubuntu's systemd-managed `gpg-agent`, which breaks commit signing when a different `gpg` version talks to it). Tools you do want from Homebrew on Linux should be symlinked into `~/.local/bin`, which is ahead of everything. mise activates last, so mise tools beat both.
 

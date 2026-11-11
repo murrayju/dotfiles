@@ -19,11 +19,10 @@ function readPackages(): string[] {
 
 function isInstalled(pkg: string): boolean {
   try {
-    const status = execFileSync(
-      'dpkg-query',
-      ['-W', '-f=${Status}', pkg],
-      { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] },
-    );
+    const status = execFileSync('dpkg-query', ['-W', '-f=${Status}', pkg], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
     return status.includes('install ok installed');
   } catch {
     return false;
