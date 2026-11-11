@@ -115,28 +115,83 @@ async function symlinkDotfiles() {
   await symlinkDirContents(DOTFILES_DIR, HOME_DIR);
 }
 
-function installOhMyZsh(): void {
-  const zshDir = path.join(HOME_DIR, '.oh-my-zsh');
-  if (!fs.existsSync(zshDir)) {
-    console.log('Installing Oh My Zsh...');
-    try {
-      execSync(
-        'sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended',
-        { stdio: 'inherit' },
-      );
-    } catch (error) {
-      console.log('Oh My Zsh installation failed or was skipped');
-    }
+// Only ever called with constant command names.
+function commandExists(command: string): boolean {
+  try {
+    execSync(`command -v ${command}`, { stdio: 'ignore' });
+    return true;
+  } catch (error) {
+    return false;
   }
 }
 
-function installPowerlevel10k(): void {
-  const p10kDir = path.join(HOME_DIR, '.oh-my-zsh/custom/themes/powerlevel10k');
-  if (!fs.existsSync(p10kDir)) {
+const OH_MY_ZSH_DIR = path.join(HOME_DIR, '.oh-my-zsh');
+// The installer refuses to run when ~/.oh-my-zsh already exists, and anything
+// creating files under it (e.g. an old theme clone) creates the directory. So
+// the directory is not a usable "installed" marker; this file is.
+const OH_MY_ZSH_MARKER = path.join(OH_MY_ZSH_DIR, 'oh-my-zsh.sh');
+const POWERLEVEL10K_DIR = path.join(
+  OH_MY_ZSH_DIR,
+  'custom/themes/powerlevel10k',
+);
+
+function installOhMyZsh(): boolean {
+  if (!commandExists('zsh')) {
+    console.log(
+      'Skipping Oh My Zsh: zsh is not installed (on Linux run "./bs apt" first)',
+    );
+    return false;
+  }
+  if (fs.existsSync(OH_MY_ZSH_MARKER)) {
+    return true;
+  }
+  if (fs.existsSync(OH_MY_ZSH_DIR)) {
+    // A partial ~/.oh-my-zsh (no oh-my-zsh.sh) makes the installer exit 1, so
+    // move it aside instead of deleting it: `custom/` may hold user content.
+    const partialDir = `${OH_MY_ZSH_DIR}.partial-${Date.now()}`;
+    console.log(
+      `Moving aside incomplete ${OH_MY_ZSH_DIR} → ${partialDir} (any custom/ content stays there)`,
+    );
+    try {
+      fs.moveSync(OH_MY_ZSH_DIR, partialDir);
+    } catch (error) {
+      console.log('Could not move the existing ~/.oh-my-zsh aside');
+      return false;
+    }
+  }
+  console.log('Installing Oh My Zsh...');
+  try {
+    // --keep-zshrc: ~/.zshrc is already our dotfiles symlink, and the
+    // installer would otherwise replace it with its own template.
+    // ZSH/ZDOTDIR are pinned so the installer writes where we check, no matter
+    // what the calling shell exports.
+    execSync(
+      'sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc',
+      {
+        stdio: 'inherit',
+        env: { ...process.env, ZSH: OH_MY_ZSH_DIR, ZDOTDIR: HOME_DIR },
+      },
+    );
+  } catch (error) {
+    console.log('Oh My Zsh installation failed or was skipped');
+  }
+  return fs.existsSync(OH_MY_ZSH_MARKER);
+}
+
+function installPowerlevel10k(ohMyZshInstalled: boolean): void {
+  if (!ohMyZshInstalled) {
+    console.log(
+      commandExists('zsh')
+        ? 'Skipping Powerlevel10k theme: Oh My Zsh is not installed'
+        : 'Skipping Powerlevel10k theme: zsh is not installed',
+    );
+    return;
+  }
+  if (!fs.existsSync(POWERLEVEL10K_DIR)) {
     console.log('Installing Powerlevel10k theme...');
     try {
       execSync(
-        'git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.oh-my-zsh/custom/themes/powerlevel10k',
+        `git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${POWERLEVEL10K_DIR}"`,
         { stdio: 'inherit' },
       );
     } catch (error) {
@@ -176,8 +231,8 @@ export default async function main() {
   await symlinkDotfiles();
 
   // Install additional tools
-  installOhMyZsh();
-  installPowerlevel10k();
+  const ohMyZshInstalled = installOhMyZsh();
+  installPowerlevel10k(ohMyZshInstalled);
   installTmuxPluginManager();
 
   console.log('\n🍺 Installing Homebrew and Brewfile...');
