@@ -5,6 +5,7 @@ import * as os from 'os';
 import { isDeepStrictEqual } from 'util';
 import { fileURLToPath } from 'url';
 import { concentrateConfigDir, findConcentrate } from './concentrate.ts';
+import { withPiOnPath } from './pi.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -165,7 +166,11 @@ function alignConcentrateDefaultModel(defaultModel: string): void {
 
   console.log(`Setting cn's default Pi model to ${defaultModel}...`);
   try {
-    execFileSync(cn, ['model', 'pi', defaultModel], { stdio: 'inherit' });
+    // cn reconfigures Pi after it saves the model, and it finds `pi` on PATH.
+    execFileSync(cn, ['model', 'pi', defaultModel], {
+      stdio: 'inherit',
+      env: withPiOnPath(process.env),
+    });
   } catch {
     console.warn(
       "⚠️  Could not save cn's default model. `cn refresh` will keep using its own default.",
@@ -277,11 +282,16 @@ function syncConcentrateReceipt(managed: Record<string, unknown>): void {
  */
 export default async function installPiSettings(): Promise<void> {
   const managed = readJsonObject(SETTINGS_SOURCE, 'managed pi settings');
-  applyManagedSettings(managed);
 
   const defaultModel = managed.defaultModel;
   if (typeof defaultModel === 'string' && defaultModel !== '') {
+    // Set cn's default model first. cn reconfigures Pi when it saves the model,
+    // and `cn configure pi` refuses a settings file that differs from its own
+    // record. Writing the settings first would therefore make cn warn.
     alignConcentrateDefaultModel(defaultModel);
+  }
+  applyManagedSettings(managed);
+  if (typeof defaultModel === 'string' && defaultModel !== '') {
     syncConcentrateReceipt(managed);
   }
 }

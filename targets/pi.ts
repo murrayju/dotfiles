@@ -36,6 +36,23 @@ export function findPi(): string | undefined {
 }
 
 /**
+ * Return `env` with the directory that holds the pi launcher first on `PATH`.
+ *
+ * cn finds a tool with a plain `PATH` search. The bootstrap does not load the
+ * shell profile, so cn cannot see `pi` without this.
+ */
+export function withPiOnPath(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
+  const pi = findPi();
+  if (!pi) {
+    return env;
+  }
+  return {
+    ...env,
+    PATH: `${path.dirname(pi)}${path.delimiter}${env.PATH ?? ''}`,
+  };
+}
+
+/**
  * Install pi if it is not already present.
  *
  * `runInstaller` runs it without a controlling terminal, so its install/

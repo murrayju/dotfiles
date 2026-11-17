@@ -8,7 +8,7 @@ import { concentrateConfigDir, findConcentrate } from './concentrate.ts';
 const CREDENTIALS_FILE_NAME: string = 'credentials.json';
 
 /** Return the key that cn has saved, if there is one. */
-function readSavedKey(): string | undefined {
+export function readSavedKey(): string | undefined {
   try {
     const file: string = path.join(
       concentrateConfigDir(),
