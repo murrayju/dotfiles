@@ -1,0 +1,274 @@
+#!/usr/bin/env node
+// Keep the newest Concentrate model of each chosen line in the Pi catalog.
+// The `cn` CLI writes the full catalog to ~/.pi/agent/models.json, so run this
+// script after any `cn` command. The shell runs it through the cn wrapper.
+// Add a line here when you want a new model family. A newer version of a line
+// replaces the old one on its own.
+//
+// `cn refresh` treats models.json as edited when it differs from the restore
+// record. After a prune, record the shorter model list there too.
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+
+const keptModelLines = [
+  // Anthropic
+  "claude-opus",
+  "claude-sonnet",
+  "claude-haiku",
+  "claude-fable",
+  // OpenAI. The name (sol, terra, luna, astra) is the line, not the version.
+  "gpt-sol",
+  "gpt-astra",
+  "gpt-luna",
+  "gpt-terra",
+  // Google. The element names are separate lines.
+  "gemini-argon",
+  "gemini-flash",
+  // DeepSeek
+  "deepseek-v4-flash",
+  "deepseek-v4-pro",
+  // Moonshot, Z.ai, MiniMax, Qwen, xAI, Mistral
+  "kimi-k3-pro",
+  "glm",
+  "glm-flash",
+  "minimax-m3",
+  "minimax-m3-flash",
+  "qwen-max",
+  "qwen-flash",
+  "qwen-27b",
+  "grok",
+  "mistral-large",
+];
+
+const agentDir = process.env.PI_CODING_AGENT_DIR ?? path.join(os.homedir(), ".pi", "agent");
+const modelsFile = path.join(agentDir, "models.json");
+const settingsFile = path.join(agentDir, "settings.json");
+const configHome = process.env.CN_CONFIG_HOME
+  ? path.resolve(process.env.CN_CONFIG_HOME.replace(/^~(?=$|\/)/, os.homedir()))
+  : process.env.XDG_CONFIG_HOME
+    ? path.join(path.resolve(process.env.XDG_CONFIG_HOME.replace(/^~(?=$|\/)/, os.homedir())), "concentrate-cli")
+    : path.join(os.homedir(), ".config", "concentrate-cli");
+const receiptFile = path.join(configHome, "tool-setups", "pi", "restore.json");
+const receiptLock = path.join(configHome, "tool-setups", "pi", ".lock");
+
+// The default model stays even when a newer release of its line exists.
+// Removing it would leave settings pointing at a model the catalog no longer has.
+// An enabled model does not get the same protection: the picker shows the newest.
+let defaultModelId = "";
+const enabledModelIds = new Set();
+if (fs.existsSync(settingsFile)) {
+  const settings = JSON.parse(fs.readFileSync(settingsFile, "utf8"));
+  if (settings.defaultProvider === "concentrate" && typeof settings.defaultModel === "string") {
+    defaultModelId = settings.defaultModel;
+  }
+  for (const reference of settings.enabledModels ?? []) {
+    const [providerId, ...idParts] = String(reference).split("/");
+    if (providerId === "concentrate" && idParts.length > 0) enabledModelIds.add(idParts.join("/"));
+  }
+}
+const config = JSON.parse(fs.readFileSync(modelsFile, "utf8"));
+const provider = config.providers?.concentrate;
+if (!Array.isArray(provider?.models)) {
+  throw new Error(`No concentrate models in ${modelsFile}`);
+}
+
+const newestModelIds = newestModelIdsByLine(provider.models, keptModelLines);
+const missingLines = keptModelLines.filter((line) => !newestModelIds.has(line));
+if (missingLines.length > 0) {
+  // Write nothing. A renamed line must not silently disappear from the picker.
+  throw new Error(
+    `No model matches these lines: ${missingLines.join(", ")}. ` +
+      `Edit keptModelLines in ${import.meta.filename}, then run the command again.`,
+  );
+}
+const presentIds = new Set(provider.models.map((model) => model.id));
+const newestIds = new Set(newestModelIds.values());
+// An enabled model stays only when it is not an older release of a chosen line.
+const keptEnabledModelIds = [...enabledModelIds].filter((id) => {
+  if (!presentIds.has(id) || newestIds.has(id)) return false;
+  return !newestModelIds.has(modelLine(id));
+});
+const wantedModelIds = new Set([
+  ...newestIds,
+  ...keptEnabledModelIds,
+  ...(presentIds.has(defaultModelId) ? [defaultModelId] : []),
+]);
+const keptModels = provider.models.filter((model) => wantedModelIds.has(model.id));
+const totalModelCount = provider.models.length;
+// Check the restore record before writing. A rejected edit must leave both files as they were.
+const receiptUpdate = planReceiptUpdate(keptModels);
+if (keptModels.length !== totalModelCount) {
+  provider.models = keptModels;
+  replacePrivateFile(modelsFile, `${JSON.stringify(config, null, 2)}\n`);
+  console.log(`Concentrate catalog: kept ${keptModels.length} of ${totalModelCount} models in ${modelsFile}`);
+}
+writeReceiptUpdate(receiptUpdate);
+
+// The line is the product name. Version numbers are not part of it, wherever
+// they sit: claude-fable-5-2, gpt-6.1-sol, and qwen3.8-max share their line
+// with older releases. A date stamp (1017, 0813) is a revision of that line.
+function modelLine(modelId) {
+  const words = [];
+  for (const part of modelId.split("-")) {
+    if (/^\d{4}$/.test(part) || /^\d{8}$/.test(part) || /^\d+(?:\.\d+)+$/.test(part) || /^\d+$/.test(part)) continue;
+    // A number after a word of two letters or more is a version: qwen3.8, qwen4.
+    // A one-letter prefix stays in the name, so v4 and m3 do not.
+    const wordWithVersion = part.match(/^([a-z]{2,})(\d+(?:\.\d+)*)$/i);
+    words.push(wordWithVersion ? wordWithVersion[1] : part);
+  }
+  return words.join("-");
+}
+
+function versionNumbers(modelId) {
+  const numbers = [];
+  const dates = [];
+  for (const part of modelId.split("-")) {
+    // A date stamp is a revision and sorts after the real version. Split the
+    // month from the day, so 0731 cannot outrank generation 1.
+    if (/^\d{4}$/.test(part)) {
+      dates.push([Number(part.slice(0, 2)), Number(part.slice(2)), "date"]);
+      continue;
+    }
+    if (/^\d{8}$/.test(part)) {
+      dates.push([Number(part.slice(0, 4)), Number(part.slice(4, 6)), Number(part.slice(6)), "date"]);
+      continue;
+    }
+    const dotted = part.match(/^\d+(?:\.\d+)+$/) ?? part.match(/^[a-z]{2,}(\d+(?:\.\d+)*)$/i);
+    const value = dotted ? (dotted[1] ?? dotted[0]) : /^\d+$/.test(part) ? part : "";
+    if (value) numbers.push(value.split(".").map(Number));
+  }
+  return [...numbers, ...dates];
+}
+
+function compareNumberLists(leftNumbers, rightNumbers) {
+  const count = Math.max(leftNumbers.length, rightNumbers.length);
+  for (let index = 0; index < count; index += 1) {
+    const leftPart = leftNumbers[index] ?? [];
+    const rightPart = rightNumbers[index] ?? [];
+    const partCount = Math.max(leftPart.length, rightPart.length);
+    for (let partIndex = 0; partIndex < partCount; partIndex += 1) {
+      const difference = (rightPart[partIndex] ?? -1) - (leftPart[partIndex] ?? -1);
+      if (difference !== 0) return difference;
+    }
+  }
+  return 0;
+}
+
+// Higher version first. Compare the version and the date stamp separately, so
+// a stamp (0731) cannot outrank a generation (v4-1). The release date breaks a tie.
+function compareModelVersion(left, right) {
+  const leftParts = versionNumbers(left.id);
+  const rightParts = versionNumbers(right.id);
+  const isDate = (part) => part.at(-1) === "date";
+  const versionDifference = compareNumberLists(
+    leftParts.filter((part) => !isDate(part)),
+    rightParts.filter((part) => !isDate(part)),
+  );
+  if (versionDifference !== 0) return versionDifference;
+  const dateDifference = compareNumberLists(
+    leftParts.filter(isDate),
+    rightParts.filter(isDate),
+  );
+  if (dateDifference !== 0) return dateDifference;
+  return (right.release_date ?? 0) - (left.release_date ?? 0);
+}
+
+function newestModelIdsByLine(models, lines) {
+  const newestByLine = new Map();
+  for (const model of models) {
+    const line = modelLine(model.id);
+    if (!lines.includes(line)) continue;
+    const current = newestByLine.get(line);
+    if (!current || compareModelVersion(current, model) > 0) newestByLine.set(line, model);
+  }
+  return new Map([...newestByLine].map(([line, model]) => [line, model.id]));
+}
+
+function replacePrivateFile(file, text) {
+  const fileMode = fs.statSync(file).mode & 0o777;
+  const temporaryFile = `${file}.${process.pid}.tmp`;
+  try {
+    fs.writeFileSync(temporaryFile, text, { mode: fileMode });
+    fs.renameSync(temporaryFile, file);
+  } finally {
+    fs.rmSync(temporaryFile, { force: true });
+  }
+}
+
+function sameJson(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+// True when every live model is the same object, in the same order, as one
+// entry of the list cn last wrote. A reorder or a field edit is not a prune.
+function isPrunedSubsequence(liveModels, recordedModels) {
+  let cursor = 0;
+  for (const model of liveModels) {
+    const match = recordedModels.slice(cursor).findIndex((candidate) => sameJson(candidate, model));
+    if (match < 0) return false;
+    cursor += match + 1;
+  }
+  return true;
+}
+
+// The model list is the only field a prune may change. The key, headers, and
+// endpoint must still be the values cn wrote.
+function providerMatchesExceptModels(liveProvider, recordedProvider) {
+  const { models: liveModels, ...liveRest } = liveProvider;
+  const { models: recordedModels, ...recordedRest } = recordedProvider;
+  return sameJson(liveRest, recordedRest) && isPrunedSubsequence(liveModels, recordedModels);
+}
+
+function planReceiptUpdate(liveModels) {
+  if (!fs.existsSync(receiptFile)) return null;
+  if (fs.existsSync(receiptLock)) {
+    throw new Error(`cn is configuring Pi (${receiptLock}). Wait for it to finish, then run the command again.`);
+  }
+
+  const receiptStat = fs.lstatSync(receiptFile);
+  if (!receiptStat.isFile() || receiptStat.isSymbolicLink()) {
+    throw new Error(`Refusing to update a non-regular restore record: ${receiptFile}`);
+  }
+  if (receiptStat.mode & 0o077) {
+    throw new Error(`Refusing to update a restore record that others can read: ${receiptFile}`);
+  }
+
+  const receipt = JSON.parse(fs.readFileSync(receiptFile, "utf8"));
+  if (receipt.version !== 1 || receipt.active !== true || !Array.isArray(receipt.files)) {
+    throw new Error(`The Pi restore record is not an active cn setup: ${receiptFile}`);
+  }
+
+  const snapshot = receipt.files.find((item) => item.file === modelsFile);
+  if (!snapshot) return null;
+  const change = snapshot.changes?.find((entry) => sameJson(entry.key, ["providers", "concentrate"]));
+  if (snapshot.format !== "json" || snapshot.changes?.length !== 1 || !change || !Array.isArray(change.value?.models)) {
+    throw new Error(`The Pi restore record does not track only the concentrate provider: ${receiptFile}`);
+  }
+
+  const written = JSON.parse(snapshot.written);
+  const writtenProvider = written?.providers?.concentrate;
+  if (!writtenProvider || !sameJson(change.value, writtenProvider)) {
+    throw new Error(`The Pi restore record disagrees with itself: ${receiptFile}`);
+  }
+  if (sameJson(writtenProvider.models, liveModels)) return null;
+  if (!providerMatchesExceptModels(provider, writtenProvider)) {
+    throw new Error(
+      `models.json differs from the cn restore record by more than a pruned model list. ` +
+        `Run cn reset pi, then cn configure pi, before pruning again.`,
+    );
+  }
+
+  writtenProvider.models = liveModels;
+  change.value.models = liveModels;
+  snapshot.written = `${JSON.stringify(written, null, 2)}\n`;
+  return `${JSON.stringify(receipt, null, 2)}\n`;
+}
+
+function writeReceiptUpdate(text) {
+  if (text === null) return;
+  // A crash after the catalog write leaves the short catalog and the old record.
+  // Run the command again to finish.
+  replacePrivateFile(receiptFile, text);
+  console.log(`Recorded the pruned catalog in ${receiptFile}`);
+}
