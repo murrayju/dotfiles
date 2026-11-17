@@ -25,6 +25,9 @@ cd ~/.dotfiles && ./bs pi
 # Install or re-check the Concentrate CLI (`cn`; the bootstrap does this too)
 cd ~/.dotfiles && ./bs concentrate
 
+# Ask for the Concentrate AI API key when cn has none saved (the bootstrap does this too)
+cd ~/.dotfiles && ./bs concentrate-key
+
 # Install the Pi catalog pruner and refresh the model list (the bootstrap does this too)
 cd ~/.dotfiles && ./bs concentrate-prune
 
@@ -68,6 +71,7 @@ alias
 - `targets/pi.ts` - `./bs pi`; installs pi from https://pi.dev/install.sh when missing. The installer is interactive, so it is spawned `detached` (no controlling terminal) to make it take its default action without prompting; node/npm come from the mise shims.
 - `targets/concentrate.ts` - `./bs concentrate`; installs the Concentrate CLI (`cn`) from https://github.com/concentrateai-hq/cli when missing. Uses the same non-interactive `detached` install as pi, and only needs Node.js 22.13+ (from the mise shims).
 - `targets/concentrate-prune.ts` - `./bs concentrate-prune`; copies `bin/pi-concentrate-prune` to `~/bin`, runs `cn refresh`, then prunes the Pi catalog to the newest model of each chosen line. The bootstrap does this after installing pi and `cn`.
+- `targets/concentrate-key.ts` - `./bs concentrate-key`; asks for the Concentrate AI API key with `cn key` when cn has none saved. `cn key` hides the input, checks the key against the API, and writes cn's own `credentials.json` with mode 600, so the key never enters this repository or the bootstrap process. The step skips itself when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal. The bootstrap does this after installing `cn` and before `pi-settings`.
 - `pi/settings.json` - the tracked pi preferences: `defaultProvider`, `defaultModel`, `defaultThinkingLevel`, `enabledModels`, `showHardwareCursor`, and `packages`.
 - `targets/pi-settings.ts` - `./bs pi-settings`; merges the keys in `pi/settings.json` into `~/.pi/agent/settings.json` and leaves every other key alone, so pi's `lastChangelogVersion` and `extensionChangelogVersions` survive. A managed key changed inside pi is overwritten on the next bootstrap. `packages` is a union, so removing an entry from `pi/settings.json` does not uninstall it; `enabledModels` replaces the list. It also sets cn's default Pi model (`cn model pi <id>`) and records the value in cn's restore record, because `cn refresh` refuses a Pi settings file whose default model differs from what it wrote. The bootstrap runs it after installing `cn` and before the refresh/prune step. Update `pi/settings.json` when the pruner drops a model because a line moved to a new version.
 - `targets/install-script.ts` - shared `runInstaller` helper: runs a `curl … | <shell>` installer `detached` with the mise shims on `PATH`, so installers never prompt and find node/npm from mise.

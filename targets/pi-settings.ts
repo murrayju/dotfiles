@@ -4,7 +4,7 @@ import { execFileSync } from 'child_process';
 import * as os from 'os';
 import { isDeepStrictEqual } from 'util';
 import { fileURLToPath } from 'url';
-import { findConcentrate } from './concentrate.ts';
+import { concentrateConfigDir, findConcentrate } from './concentrate.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,16 +22,7 @@ const SETTINGS_SOURCE: string = path.join(
 const AGENT_DIR: string =
   process.env.PI_CODING_AGENT_DIR ?? path.join(HOME_DIR, '.pi', 'agent');
 const SETTINGS_FILE: string = path.join(AGENT_DIR, 'settings.json');
-const CONCENTRATE_CONFIG_DIR: string = process.env.CN_CONFIG_HOME
-  ? path.resolve(process.env.CN_CONFIG_HOME.replace(/^~(?=$|\/)/, HOME_DIR))
-  : process.env.XDG_CONFIG_HOME
-    ? path.join(
-        path.resolve(
-          process.env.XDG_CONFIG_HOME.replace(/^~(?=$|\/)/, HOME_DIR),
-        ),
-        'concentrate-cli',
-      )
-    : path.join(HOME_DIR, '.config', 'concentrate-cli');
+const CONCENTRATE_CONFIG_DIR: string = concentrateConfigDir();
 const RECEIPT_FILE: string = path.join(
   CONCENTRATE_CONFIG_DIR,
   'tool-setups',

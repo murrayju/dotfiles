@@ -32,6 +32,7 @@ The new bootstrap system will:
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install [pi](https://pi.dev/) if it is not already installed
 - Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
+- Ask for the Concentrate AI API key when `cn` has none saved (answer `n` to skip)
 - Apply the tracked [pi](https://pi.dev/) preferences (default model, thinking level, enabled models, hardware cursor, and packages)
 - Install the Pi catalog pruner and refresh the Concentrate model list
 - Set up the modern Neovim configuration
@@ -45,6 +46,8 @@ cd ~/.dotfiles && ./bs apt
 The pi installer is normally interactive; the bootstrap runs it without a controlling terminal, which makes it take its default action and install noninteractively. Re-run it on its own with `./bs pi`. The shell config puts `~/.pi/agent/bin` on `$PATH`, so a freshly installed pi is usable after `reload`.
 
 The Concentrate CLI is installed the same way (noninteractively) with `./bs concentrate`. It needs Node.js 22.13+, which mise provides, and puts its `cn` launcher in `~/.local/bin`, which the shell config already puts on `$PATH`.
+
+The API key is the one thing the dotfiles cannot carry, so the bootstrap asks for it. `./bs concentrate-key` runs `cn key` when cn has no saved key: cn prompts with hidden input, checks the key against the API, and writes it to its own config directory with mode 600. The repository and the bootstrap process never hold the key. Answer `n` at the question to skip, or set `CONCENTRATE_API_KEY` in `~/.extra` and cn uses that key instead. When stdin is not a terminal the step skips itself, so a non-interactive bootstrap never waits for an answer.
 
 Each bootstrap also installs `bin/pi-concentrate-prune` to `~/bin` and runs `cn refresh`. Refresh writes the full catalog, and the pruner keeps the newest model of each chosen line. Run that step on its own with `./bs concentrate-prune`.
 
@@ -120,6 +123,7 @@ The bootstrap uses three package managers:
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 - **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
 - **Concentrate CLI** (`targets/concentrate.ts`, `./bs concentrate`): installed with its [install script](https://github.com/concentrateai-hq/cli) when `cn` is missing. Like pi, it installs itself outside the package managers and only needs Node.js 22.13+ (from mise).
+- **Concentrate API key** (`targets/concentrate-key.ts`, `./bs concentrate-key`): asks for the key with `cn key` when cn has none saved, so the secret stays in cn's own config directory. Skipped when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal.
 - **Pi catalog pruner** (`bin/pi-concentrate-prune`, `targets/concentrate-prune.ts`, `./bs concentrate-prune`): copied to `~/bin` on every bootstrap, then `cn refresh` runs and the pruner keeps the newest model of each chosen line.
 - **pi preferences** (`pi/settings.json`, `targets/pi-settings.ts`, `./bs pi-settings`): merged into `~/.pi/agent/settings.json` on every bootstrap. Only the managed keys are written, so pi's changelog stamps and any setting changed inside pi stay as they are.
 

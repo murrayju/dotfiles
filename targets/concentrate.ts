@@ -11,6 +11,28 @@ const CN_INSTALL_URL: string =
 const CN_LAUNCHER: string = path.join(HOME_DIR, '.local/bin/cn');
 const CN_LAUNCHER_MARKER: string = '# concentrate-cli launcher';
 
+/**
+ * The directory cn keeps its state in.
+ *
+ * This follows `configDir` in cn: `CN_CONFIG_HOME`, else
+ * `$XDG_CONFIG_HOME/concentrate-cli`, else `~/.config/concentrate-cli`. A
+ * leading `~` is expanded to the home directory.
+ */
+export function concentrateConfigDir(): string {
+  const expandHome = (value: string): string =>
+    path.resolve(value.replace(/^~(?=$|\/)/, HOME_DIR));
+  if (process.env.CN_CONFIG_HOME) {
+    return expandHome(process.env.CN_CONFIG_HOME);
+  }
+  if (process.env.XDG_CONFIG_HOME) {
+    return path.join(
+      expandHome(process.env.XDG_CONFIG_HOME),
+      'concentrate-cli',
+    );
+  }
+  return path.join(HOME_DIR, '.config', 'concentrate-cli');
+}
+
 /** Return the path to an installed Concentrate launcher, if there is one. */
 export function findConcentrate(): string | undefined {
   try {
