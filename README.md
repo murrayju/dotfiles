@@ -32,6 +32,7 @@ The new bootstrap system will:
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install [pi](https://pi.dev/) if it is not already installed
 - Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
+- Apply the tracked [pi](https://pi.dev/) preferences (default model, thinking level, enabled models, hardware cursor, and packages)
 - Install the Pi catalog pruner and refresh the Concentrate model list
 - Set up the modern Neovim configuration
 
@@ -46,6 +47,14 @@ The pi installer is normally interactive; the bootstrap runs it without a contro
 The Concentrate CLI is installed the same way (noninteractively) with `./bs concentrate`. It needs Node.js 22.13+, which mise provides, and puts its `cn` launcher in `~/.local/bin`, which the shell config already puts on `$PATH`.
 
 Each bootstrap also installs `bin/pi-concentrate-prune` to `~/bin` and runs `cn refresh`. Refresh writes the full catalog, and the pruner keeps the newest model of each chosen line. Run that step on its own with `./bs concentrate-prune`.
+
+### pi preferences
+
+`pi/settings.json` holds the pi preferences the bootstrap manages: `defaultProvider`, `defaultModel`, `defaultThinkingLevel`, `enabledModels`, `showHardwareCursor`, and `packages` (which includes [pi-advisor-flow](https://www.npmjs.com/package/pi-advisor-flow)).
+
+That file is merged into `~/.pi/agent/settings.json` rather than symlinked, because pi also keeps its own state there: `lastChangelogVersion`, `extensionChangelogVersions`, the theme, and anything you change inside pi. Only the listed keys are written, so the other keys survive. A listed key changed inside pi is put back on the next bootstrap. `enabledModels` replaces the current list, and `packages` is a union so other installed packages stay; removing an entry from `pi/settings.json` does not uninstall the package. Run the step on its own with `./bs pi-settings`.
+
+`cn` owns the same two default-model keys and refuses to refresh a tool whose settings differ from what it wrote. So the step also sets cn's default Pi model (`cn model pi <id>`) and records the value in cn's restore record, which keeps `cn refresh` working after a bootstrap.
 
 ### Git-free install
 
@@ -112,6 +121,7 @@ The bootstrap uses three package managers:
 - **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
 - **Concentrate CLI** (`targets/concentrate.ts`, `./bs concentrate`): installed with its [install script](https://github.com/concentrateai-hq/cli) when `cn` is missing. Like pi, it installs itself outside the package managers and only needs Node.js 22.13+ (from mise).
 - **Pi catalog pruner** (`bin/pi-concentrate-prune`, `targets/concentrate-prune.ts`, `./bs concentrate-prune`): copied to `~/bin` on every bootstrap, then `cn refresh` runs and the pruner keeps the newest model of each chosen line.
+- **pi preferences** (`pi/settings.json`, `targets/pi-settings.ts`, `./bs pi-settings`): merged into `~/.pi/agent/settings.json` on every bootstrap. Only the managed keys are written, so pi's changelog stamps and any setting changed inside pi stay as they are.
 
 Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `typescript`, `prettier`) is installed by **bun** into `node_modules` from `package.json` and `bun.lock`. Bun itself is not a prerequisite: `./bun` is a [bun-strap](https://github.com/murrayju/bun-strap) copy that downloads the pinned version into `download/bun/`. The shell config adds a `bun` function that prefers a project-local `./bun` and otherwise falls back to the globally installed one.
 

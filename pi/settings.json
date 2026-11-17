@@ -1,0 +1,23 @@
+{
+  "defaultProvider": "concentrate",
+  "defaultModel": "deepseek-v4-1-flash-1017",
+  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "openai-codex/gpt-6-astra",
+    "openai-codex/gpt-6.1-sol",
+    "concentrate/claude-fable-5-2",
+    "concentrate/claude-opus-5-5",
+    "concentrate/deepseek-v4-1-flash-1017",
+    "concentrate/gemini-4-hydrogen",
+    "concentrate/gemini-4-argon",
+    "concentrate/gemini-4-carbon",
+    "concentrate/glm-5.3",
+    "concentrate/glm-5.3-flash",
+    "concentrate/gpt-6-astra",
+    "concentrate/gpt-6.1-sol",
+    "concentrate/kimi-k3-1-pro",
+    "concentrate/minimax-m3-1-flash"
+  ],
+  "showHardwareCursor": true,
+  "packages": ["npm:pi-advisor-flow"]
+}

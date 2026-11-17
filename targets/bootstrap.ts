@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
 import installPi from './pi.ts';
 import installConcentrate from './concentrate.ts';
+import installPiSettings from './pi-settings.ts';
 import installConcentratePrune from './concentrate-prune.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -289,6 +290,9 @@ export default async function main() {
 
   console.log('\n🧠 Installing Concentrate CLI (cn)...');
   await installConcentrate();
+
+  console.log('\n⚙️  Applying pi settings...');
+  await installPiSettings();
 
   console.log('\n🧩 Pruning the Pi Concentrate catalog...');
   await installConcentratePrune();
