@@ -64,7 +64,7 @@ That file is merged into `~/.pi/agent/settings.json` rather than symlinked, beca
 To install these dotfiles without Git:
 
 ```bash
-cd; curl -#L https://github.com/murrayju/dotfiles/tarball/master | tar -xzv --strip-components 1 --exclude={README.md,macos.sh,LICENSE-MIT.txt} && ./bs
+cd; curl -#L https://github.com/murrayju/dotfiles/tarball/main | tar -xzv --strip-components 1 --exclude={README.md,macos.sh,LICENSE-MIT.txt} && ./bs
 ```
 
 To update later on, just run that command again.
