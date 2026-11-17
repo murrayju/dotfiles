@@ -5,7 +5,7 @@
     "": {
       "name": "dotfiles",
       "dependencies": {
-        "build-strap": "^6.3.0",
+        "build-strap": "^6.3.2",
         "fs-extra": "^11.4.1",
       },
       "devDependencies": {
@@ -73,7 +73,7 @@
 
     "brace-expansion": ["brace-expansion@5.0.13", "", { "dependencies": { "balanced-match": "^4.0.2" } }, "sha512-Vh3dmFbc4wZeox7M9I/0L9GfFd83Su4+yCck/OF9Gi/P/dAHn0RT7X4K9R7gMNMhDck3DvhR6QXsnQdjjgwNvQ=="],
 
-    "build-strap": ["build-strap@6.3.0", "", { "dependencies": { "bytes": "^3.1.1", "chokidar": "^6.0.0", "cross-spawn": "^7.0.3", "fs-extra": "^11.4.1", "get-port": "^7.1.0", "glob": "^14.0.4", "is-reachable": "^6.1.0", "js-yaml": "^5.5.0", "rimraf": "^6.1.4", "semver": "^7.8.6", "tar": "^7.1.0" } }, "sha512-qM+CfHZWh5U8jNJnREH8WB0KqYdx0+5EQIrYdQoma9Idx9aZh+6XMZiFe5ovD/1BLImUwE7uMCInQwGnrCUEhQ=="],
+    "build-strap": ["build-strap@6.3.2", "", { "dependencies": { "bytes": "^3.1.1", "chokidar": "^6.0.0", "cross-spawn": "^7.0.3", "fs-extra": "^11.4.1", "get-port": "^7.1.0", "glob": "^14.0.4", "is-reachable": "^6.1.0", "js-yaml": "^5.5.0", "rimraf": "^6.1.4", "semver": "^7.8.6", "tar": "^7.1.0" } }, "sha512-GMJWFfSHuXjwKUIBdb470BmrrdDL2/eKWqRq9QxkA9Sh3+iHZSZE1h0DV/DPFRFmxFsNqOvOIYhP5WUl8c7M0Q=="],
 
     "bytes": ["bytes@3.1.2", "", {}, "sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg=="],
 

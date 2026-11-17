@@ -21,7 +21,7 @@
     "typescript": "^7.0.2"
   },
   "dependencies": {
-    "build-strap": "^6.3.0",
+    "build-strap": "^6.3.2",
     "fs-extra": "^11.4.1"
   }
 }
