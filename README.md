@@ -31,6 +31,7 @@ The new bootstrap system will:
 - Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install [pi](https://pi.dev/) if it is not already installed
+- Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
 - Set up the modern Neovim configuration
 
 On Linux the bootstrap does **not** install distro packages. Do that once, separately (it needs sudo):
@@ -40,6 +41,8 @@ cd ~/.dotfiles && ./bs apt
 ```
 
 The pi installer is normally interactive; the bootstrap runs it without a controlling terminal, which makes it take its default action and install noninteractively. Re-run it on its own with `./bs pi`. The shell config puts `~/.pi/agent/bin` on `$PATH`, so a freshly installed pi is usable after `reload`.
+
+The Concentrate CLI is installed the same way (noninteractively) with `./bs concentrate`. It needs Node.js 22.13+, which mise provides, and puts its `cn` launcher in `~/.local/bin`, which the shell config already puts on `$PATH`.
 
 ### Git-free install
 
@@ -104,6 +107,7 @@ The bootstrap uses three package managers:
 - **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 - **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
+- **Concentrate CLI** (`targets/concentrate.ts`, `./bs concentrate`): installed with its [install script](https://github.com/concentrateai-hq/cli) when `cn` is missing. Like pi, it installs itself outside the package managers and only needs Node.js 22.13+ (from mise).
 
 Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `typescript`, `prettier`) is installed by **bun** into `node_modules` from `package.json` and `bun.lock`. Bun itself is not a prerequisite: `./bun` is a [bun-strap](https://github.com/murrayju/bun-strap) copy that downloads the pinned version into `download/bun/`. The shell config adds a `bun` function that prefers a project-local `./bun` and otherwise falls back to the globally installed one.
 

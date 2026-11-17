@@ -22,6 +22,9 @@ cd ~/.dotfiles && ./bs apt
 # Install or re-check pi (the bootstrap does this too)
 cd ~/.dotfiles && ./bs pi
 
+# Install or re-check the Concentrate CLI (`cn`; the bootstrap does this too)
+cd ~/.dotfiles && ./bs concentrate
+
 # Configure macOS system preferences (requires admin privileges)
 ./macos.sh
 ```
@@ -57,6 +60,8 @@ alias
 - `targets/bootstrap.ts` - Installation script, TypeScript run directly by Bun
 - `targets/apt.ts` - `./bs apt`; installs `packages/apt.txt` via apt-get (Linux only, opt-in, needs sudo)
 - `targets/pi.ts` - `./bs pi`; installs pi from https://pi.dev/install.sh when missing. The installer is interactive, so it is spawned `detached` (no controlling terminal) to make it take its default action without prompting; node/npm come from the mise shims.
+- `targets/concentrate.ts` - `./bs concentrate`; installs the Concentrate CLI (`cn`) from https://github.com/concentrateai-hq/cli when missing. Uses the same non-interactive `detached` install as pi, and only needs Node.js 22.13+ (from the mise shims).
+- `targets/install-script.ts` - shared `runInstaller` helper: runs a `curl … | <shell>` installer `detached` with the mise shims on `PATH`, so installers never prompt and find node/npm from mise.
 - `bun` - Pinned [bun-strap](https://github.com/murrayju/bun-strap) launcher; downloads Bun into `download/bun/<version>` on first use, so no global runtime is required. Bump the version inside it deliberately.
 - `bs` - Bootstrap entrypoint: `./bun install` then `./bun ./targets/run.ts "$@"` (run from anywhere; it cds to the repo first)
 - `package.json` / `bun.lock` - Build tooling dependencies (`build-strap`, `fs-extra`, `typescript`, `prettier`); `bun.lock` is committed
