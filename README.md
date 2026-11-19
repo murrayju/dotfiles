@@ -31,6 +31,7 @@ The new bootstrap system will:
 - Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install [pi](https://pi.dev/) if it is not already installed
+- Clone [murrayju/skills](https://github.com/murrayju/skills) into `~/.agents/skills` and fast-forward it to latest `main`
 - Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
 - Ask for the Concentrate AI API key when `cn` has none saved (answer `n` to skip)
 - Apply the tracked [pi](https://pi.dev/) preferences (default model, thinking level, enabled models, hardware cursor, and packages)
@@ -126,6 +127,7 @@ The bootstrap uses three package managers:
 - **Concentrate API key** (`targets/concentrate-key.ts`, `./bs concentrate-key`): asks for the key with `cn key` when cn has none saved, so the secret stays in cn's own config directory. Skipped when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal.
 - **Pi catalog pruner** (`bin/pi-concentrate-prune`, `targets/concentrate-prune.ts`, `./bs concentrate-prune`): copied to `~/bin` on every bootstrap, then `cn refresh` runs and the pruner keeps the newest model of each chosen line.
 - **pi preferences** (`pi/settings.json`, `targets/pi-settings.ts`, `./bs pi-settings`): merged into `~/.pi/agent/settings.json` on every bootstrap. Only the managed keys are written, so pi's changelog stamps and any setting changed inside pi stay as they are.
+- **agent skills** (`targets/skills.ts`, `./bs skills`): clones <https://github.com/murrayju/skills> into `~/.agents/skills`, the directory pi discovers skills in, and fast-forwards it to latest `main` on every bootstrap. Updating is best-effort: an offline machine, local commits, a diverged history, or a branch other than `main` only warns, so the rest of the bootstrap still runs. Skills that other tools install in that directory are left alone, so a directory those tools create before the first bootstrap is not replaced; the step warns about it instead.
 
 Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `typescript`, `prettier`) is installed by **bun** into `node_modules` from `package.json` and `bun.lock`. Bun itself is not a prerequisite: `./bun` is a [bun-strap](https://github.com/murrayju/bun-strap) copy that downloads the pinned version into `download/bun/`. The shell config adds a `bun` function that prefers a project-local `./bun` and otherwise falls back to the globally installed one.
 
