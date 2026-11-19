@@ -22,6 +22,9 @@ cd ~/.dotfiles && ./bs apt
 # Install or re-check pi (the bootstrap does this too)
 cd ~/.dotfiles && ./bs pi
 
+# Install or update the Pi Herdr subagents extension (the bootstrap does this too)
+cd ~/.dotfiles && ./bs pi-herdr-subagents
+
 # Install or re-check the Concentrate CLI (`cn`; the bootstrap does this too)
 cd ~/.dotfiles && ./bs concentrate
 
@@ -73,6 +76,7 @@ alias
 - `targets/apt.ts` - `./bs apt`; installs `packages/apt.txt` via apt-get (Linux only, opt-in, needs sudo)
 - `targets/pi.ts` - `./bs pi`; installs pi from https://pi.dev/install.sh when missing. The installer is interactive, so it is spawned `detached` (no controlling terminal) to make it take its default action without prompting; node/npm come from the mise shims.
 - `targets/skills.ts` - `./bs skills`; clones https://github.com/murrayju/skills into `~/.agents/skills`, the Agent Skills directory pi discovers, when it is missing, and otherwise fast-forwards it with `git pull --ff-only origin main`. Updating is best-effort: an offline machine, local commits, a diverged history, a branch other than `main`, or a directory that is not that clone only warns, so the rest of the bootstrap still runs. Git runs with `GIT_TERMINAL_PROMPT=0` and `ssh -o BatchMode=yes` (unless `GIT_SSH_COMMAND` or `core.sshCommand` is set), so a missing key cannot make the bootstrap wait on a prompt. Other tools install skills in the same directory (the repository's `.gitignore` hides them from the clone) and this step leaves them alone, so a directory those tools create before the first bootstrap is warned about, not replaced. The bootstrap does this after installing pi.
+- `targets/pi-herdr-subagents.ts` - `./bs pi-herdr-subagents`; clones https://github.com/murrayju/pi-herdr-subagents into `~/.pi/agent/extensions/herdr-subagents`, or under `PI_CODING_AGENT_DIR` if set. It shares `targets/git-checkout.ts` with the skills target: clone or fast-forward `main`, warn on failure, and leave unrelated directories alone. Pi discovers the clone automatically, so do not add a second copy through Pi's package settings.
 - `targets/concentrate.ts` - `./bs concentrate`; installs the Concentrate CLI (`cn`) from https://github.com/concentrateai-hq/cli when missing. Uses the same non-interactive `detached` install as pi, and only needs Node.js 22.13+ (from the mise shims).
 - `targets/concentrate-prune.ts` - `./bs concentrate-prune`; copies `bin/pi-concentrate-prune` to `~/bin`, runs `cn refresh`, then prunes the Pi catalog to the newest model of each chosen line. The bootstrap does this after installing pi and `cn`.
 - `targets/concentrate-key.ts` - `./bs concentrate-key`; asks for the Concentrate AI API key with `cn key` when cn has none saved. `cn key` hides the input, checks the key against the API, and writes cn's own `credentials.json` with mode 600, so the key never enters this repository or the bootstrap process. The step skips itself when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal. The bootstrap does this after installing `cn` and before `pi-settings`.

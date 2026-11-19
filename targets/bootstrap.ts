@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
 import installPi from './pi.ts';
 import installSkills from './skills.ts';
+import installPiHerdrSubagents from './pi-herdr-subagents.ts';
 import installConcentrate from './concentrate.ts';
 import configureConcentrateKey from './concentrate-key.ts';
 import configureConcentratePi from './concentrate-configure.ts';
@@ -293,6 +294,9 @@ export default async function main() {
 
   console.log('\n📚 Installing agent skills...');
   await installSkills();
+
+  console.log('\n🤖 Installing Pi Herdr subagents...');
+  await installPiHerdrSubagents();
 
   console.log('\n🧠 Installing Concentrate CLI (cn)...');
   await installConcentrate();

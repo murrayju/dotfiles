@@ -32,6 +32,7 @@ The new bootstrap system will:
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install [pi](https://pi.dev/) if it is not already installed
 - Clone [murrayju/skills](https://github.com/murrayju/skills) into `~/.agents/skills` and fast-forward it to latest `main`
+- Clone [pi-herdr-subagents](https://github.com/murrayju/pi-herdr-subagents) into Pi's global extensions and fast-forward it to latest `main`
 - Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
 - Ask for the Concentrate AI API key when `cn` has none saved (answer `n` to skip)
 - Apply the tracked [pi](https://pi.dev/) preferences (default model, thinking level, enabled models, hardware cursor, and packages)
@@ -59,6 +60,12 @@ Each bootstrap also installs `bin/pi-concentrate-prune` to `~/bin` and runs `cn 
 That file is merged into `~/.pi/agent/settings.json` rather than symlinked, because pi also keeps its own state there: `lastChangelogVersion`, `extensionChangelogVersions`, the theme, and anything you change inside pi. Only the listed keys are written, so the other keys survive. A listed key changed inside pi is put back on the next bootstrap. `enabledModels` replaces the current list, and `packages` is a union so other installed packages stay; removing an entry from `pi/settings.json` does not uninstall the package. Run the step on its own with `./bs pi-settings`.
 
 `cn` owns the same two default-model keys and refuses to refresh a tool whose settings differ from what it wrote. So the step also sets cn's default Pi model (`cn model pi <id>`) and records the value in cn's restore record, which keeps `cn refresh` working after a bootstrap.
+
+### Pi subagents in Herdr
+
+[pi-herdr-subagents](https://github.com/murrayju/pi-herdr-subagents) runs Pi workers in named Herdr tabs and shows their output and usage in the parent session. Bootstrap clones it into `~/.pi/agent/extensions/herdr-subagents` (or under `$PI_CODING_AGENT_DIR`) and only pulls fast-forward updates on `main`. Use `./bs pi-herdr-subagents` to run just this step, then start Pi inside Herdr or run `/reload`.
+
+If you installed the prototype with symlinks, move that directory outside Pi's `extensions` directory before running this target. Bootstrap leaves unrelated directories alone. Do not also install the repo with `pi install`, or Pi can load two copies of the extension. See the [extension README](https://github.com/murrayju/pi-herdr-subagents#readme) for usage.
 
 ### Git-free install
 
