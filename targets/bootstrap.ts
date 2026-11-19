@@ -12,6 +12,7 @@ import configureConcentrateKey from './concentrate-key.ts';
 import configureConcentratePi from './concentrate-configure.ts';
 import installPiSettings from './pi-settings.ts';
 import installConcentratePrune from './concentrate-prune.ts';
+import configurePiMythos from './pi-mythos.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -312,6 +313,9 @@ export default async function main() {
 
   console.log('\n🧩 Pruning the Pi Concentrate catalog...');
   await installConcentratePrune();
+
+  console.log('\n🧠 Adding the Anthropic Mythos model...');
+  await configurePiMythos();
 
   console.log('\n✅ Bootstrap completed!');
   console.log('\nNext steps:');

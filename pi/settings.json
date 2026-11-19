@@ -6,6 +6,7 @@
     "openai-codex/gpt-6.2-astra",
     "openai-codex/gpt-6.2-sol",
     "concentrate/claude-fable-5-2",
+    "anthropic-mythos/claude-mythos-5-2",
     "concentrate/claude-opus-5-5",
     "concentrate/deepseek-v4-1-flash-1017",
     "concentrate/gemini-4-hydrogen",

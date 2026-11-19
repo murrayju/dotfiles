@@ -37,6 +37,7 @@ The new bootstrap system will:
 - Ask for the Concentrate AI API key when `cn` has none saved (answer `n` to skip)
 - Apply the tracked [pi](https://pi.dev/) preferences (default model, thinking level, enabled models, hardware cursor, and packages)
 - Install the Pi catalog pruner and refresh the Concentrate model list
+- Add the `claude-mythos-5-2` model through its own Anthropic provider, with the key from `$MYTHOS_API_KEY`
 - Set up the modern Neovim configuration
 
 On Linux the bootstrap does **not** install distro packages. Do that once, separately (it needs sudo):
@@ -134,6 +135,7 @@ The bootstrap uses three package managers:
 - **Concentrate API key** (`targets/concentrate-key.ts`, `./bs concentrate-key`): asks for the key with `cn key` when cn has none saved, so the secret stays in cn's own config directory. Skipped when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal.
 - **Pi catalog pruner** (`bin/pi-concentrate-prune`, `targets/concentrate-prune.ts`, `./bs concentrate-prune`): copied to `~/bin` on every bootstrap, then `cn refresh` runs and the pruner keeps the newest model of each chosen line.
 - **pi preferences** (`pi/settings.json`, `targets/pi-settings.ts`, `./bs pi-settings`): merged into `~/.pi/agent/settings.json` on every bootstrap. Only the managed keys are written, so pi's changelog stamps and any setting changed inside pi stay as they are.
+- **Anthropic Mythos model** (`targets/pi-mythos.ts`, `./bs pi-mythos`): adds `claude-mythos-5-2` to `~/.pi/agent/models.json` as its own `anthropic-mythos` provider. The provider uses the Anthropic API and the `$MYTHOS_API_KEY` key. A separate provider keeps the key away from the built-in `anthropic` models. Set the key in the environment, for example in the untracked `~/.extra`. The step runs after the Concentrate refresh because that refresh rewrites the catalog.
 - **agent skills** (`targets/skills.ts`, `./bs skills`): clones <https://github.com/murrayju/skills> into `~/.agents/skills`, the directory pi discovers skills in, and fast-forwards it to latest `main` on every bootstrap. Updating is best-effort: an offline machine, local commits, a diverged history, or a branch other than `main` only warns, so the rest of the bootstrap still runs. Skills that other tools install in that directory are left alone, so a directory those tools create before the first bootstrap is not replaced; the step warns about it instead.
 
 Separately from those, the bootstrap's own tooling (`build-strap`, `fs-extra`, `typescript`, `prettier`) is installed by **bun** into `node_modules` from `package.json` and `bun.lock`. Bun itself is not a prerequisite: `./bun` is a [bun-strap](https://github.com/murrayju/bun-strap) copy that downloads the pinned version into `download/bun/`. The shell config adds a `bun` function that prefers a project-local `./bun` and otherwise falls back to the globally installed one.

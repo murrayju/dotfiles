@@ -40,6 +40,9 @@ cd ~/.dotfiles && ./bs concentrate-prune
 # Apply the tracked pi preferences (the bootstrap does this too)
 cd ~/.dotfiles && ./bs pi-settings
 
+# Add the Anthropic Mythos model with its own key (the bootstrap does this too)
+cd ~/.dotfiles && ./bs pi-mythos
+
 # Configure macOS system preferences (requires admin privileges)
 ./macos.sh
 ```
@@ -83,6 +86,7 @@ alias
 - `targets/concentrate-configure.ts` - `./bs concentrate-configure`; runs `cn configure pi` to write pi's Concentrate provider into `~/.pi/agent/models.json` and to point pi's defaults at Concentrate. It skips when Pi already has an active cn setup, because `cn refresh` in the prune step updates that setup, and `cn configure pi` refuses a settings file that was edited after the last configure. It also skips when cn has no saved key, because cn needs a stored key for a permanent setup, and when `pi` or `cn` is missing. A skipped run is not a problem: run `cn configure pi` by hand if cn has a stale setup record. The step puts the directory of the pi launcher first on `PATH` for the command, since the bootstrap does not load the shell profile. The bootstrap does this after the key step and before `pi-settings`, because `cn configure pi` writes its own default model and `pi-settings` then applies the managed one.
 - `pi/settings.json` - the tracked pi preferences: `defaultProvider`, `defaultModel`, `defaultThinkingLevel`, `enabledModels`, `showHardwareCursor`, and `packages`.
 - `targets/pi-settings.ts` - `./bs pi-settings`; merges the keys in `pi/settings.json` into `~/.pi/agent/settings.json` and leaves every other key alone, so pi's `lastChangelogVersion` and `extensionChangelogVersions` survive. A managed key changed inside pi is overwritten on the next bootstrap. `packages` is a union, so removing an entry from `pi/settings.json` does not uninstall it; `enabledModels` replaces the list. It also sets cn's default Pi model (`cn model pi <id>`) and records the value in cn's restore record, because `cn refresh` refuses a Pi settings file whose default model differs from what it wrote. It sets the cn model before it merges the settings, because `cn model pi` reconfigures Pi itself and cn rejects a settings file that already differs from its record. The bootstrap runs it after `concentrate-configure` and before the refresh/prune step. Update `pi/settings.json` when the pruner drops a model because a line moved to a new version.
+- `targets/pi-mythos.ts` - `./bs pi-mythos`; writes the `anthropic-mythos` provider into `~/.pi/agent/models.json`, or under `PI_CODING_AGENT_DIR` if set. The provider adds only `claude-mythos-5-2`, uses the Anthropic API at `https://api.anthropic.com`, and reads its key from `$MYTHOS_API_KEY`. Pi applies `apiKey` to every model of a provider, so a separate provider ID keeps the key away from the built-in `anthropic` models. The model metadata matches `claude-fable-5-2`. Every other provider stays as it is. The bootstrap runs it after the Concentrate refresh, because that refresh rewrites the catalog.
 - `targets/install-script.ts` - shared `runInstaller` helper: runs a `curl … | <shell>` installer `detached` with the mise shims on `PATH`, so installers never prompt and find node/npm from mise.
 - `bun` - Pinned [bun-strap](https://github.com/murrayju/bun-strap) launcher; downloads Bun into `download/bun/<version>` on first use, so no global runtime is required. Bump the version inside it deliberately.
 - `bs` - Bootstrap entrypoint: `./bun install` then `./bun ./targets/run.ts "$@"` (run from anywhere; it cds to the repo first)
