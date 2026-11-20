@@ -27,7 +27,13 @@ function dotbs() {
 		return 1;
 	fi;
 	# The subshell changes directory, so this shell keeps its own directory.
-	(cd "$repo" && git pull && ./bs);
+	if ! (cd "$repo" && git pull && ./bs); then
+		return 1;
+	fi;
+	# The bootstrap can replace this file, so start a fresh login shell to load
+	# it. `reload` is an alias for this command, and an alias does not expand
+	# inside a function in every shell, so run the command itself.
+	exec "${SHELL}" -l;
 }
 
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
