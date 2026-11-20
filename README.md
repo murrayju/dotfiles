@@ -30,6 +30,7 @@ The new bootstrap system will:
 - Install Oh My Zsh, Powerlevel10k theme, and Tmux Plugin Manager
 - Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
+- Install or upgrade the [gh-stack](https://github.com/github/gh-stack) GitHub CLI extension (`./bs gh-stack`)
 - Install [pi](https://pi.dev/) if it is not already installed
 - Clone [murrayju/skills](https://github.com/murrayju/skills) into `~/.agents/skills` and fast-forward it to latest `main`
 - Clone [pi-herdr-subagents](https://github.com/murrayju/pi-herdr-subagents) into Pi's global extensions and fast-forward it to latest `main`
@@ -130,6 +131,7 @@ The bootstrap uses three package managers:
 - **Homebrew** (`Brewfile`): system tools, libraries, fonts, and apps. The file is a Ruby DSL with `if OS.mac?` / `if OS.linux?` blocks, so `brew bundle --file Brewfile` is valid on either platform. macOS gets the GNU userland and casks; Linux gets only what Homebrew is genuinely best at (fonts), because anything with system integration has to come from the distro.
 - **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
+- **gh-stack** (`targets/gh-stack.ts`, `./bs gh-stack`): installs or upgrades the official `github/gh-stack` extension for `gh` after mise installs `gh`. Skips with a warning if `gh` is missing, offline, or another extension owns `gh stack`.
 - **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
 - **Concentrate CLI** (`targets/concentrate.ts`, `./bs concentrate`): installed with its [install script](https://github.com/concentrateai-hq/cli) when `cn` is missing. Like pi, it installs itself outside the package managers and only needs Node.js 22.13+ (from mise).
 - **Concentrate API key** (`targets/concentrate-key.ts`, `./bs concentrate-key`): asks for the key with `cn key` when cn has none saved, so the secret stays in cn's own config directory. Skipped when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal.

@@ -5,6 +5,7 @@ import * as os from 'os';
 import { fileURLToPath } from 'url';
 import { ensureBrewfileInstalled, ensureBrewInstalled } from 'build-strap';
 import installPi from './pi.ts';
+import installGhStack from './gh-stack.ts';
 import installSkills from './skills.ts';
 import installPiHerdrSubagents from './pi-herdr-subagents.ts';
 import installConcentrate from './concentrate.ts';
@@ -289,6 +290,9 @@ export default async function main() {
 
   console.log('\n🧰 Installing mise and its tools...');
   installMiseTools();
+
+  console.log('\n📚 Installing GitHub CLI gh-stack extension...');
+  await installGhStack();
 
   console.log('\n🤖 Installing pi...');
   await installPi();
