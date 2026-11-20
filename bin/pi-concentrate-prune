@@ -24,6 +24,9 @@ const keptModelLines = [
   "gpt-terra",
   // Google. The element names are separate lines.
   "gemini-argon",
+  "gemini-carbon",
+  "gemini-hydrogen",
+  "gemini-neon",
   "gemini-flash",
   // DeepSeek
   "deepseek-v4-flash",
