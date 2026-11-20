@@ -7,26 +7,26 @@ const HOME_DIR: string = os.homedir();
 const MISE_SHIMS: string = path.join(HOME_DIR, '.local/share/mise/shims');
 
 /**
- * Run a `curl … | <shell>` installer without letting it ask anything.
+ * Run a shell command without letting it ask anything.
  *
- * Many upstream installers are interactive: they ask whether to install or
- * reinstall, whether to edit your shell profile, or whether to start the tool.
- * Each of those prompts is guarded by a `/dev/tty` check, so running the
- * installer in its own session (`detached`, i.e. no controlling terminal)
- * makes it take its default action instead of prompting. stdin is closed as
- * well, so it cannot read from the user's terminal either. PATH gets the mise
- * shims first, so node/npm come from mise and the installer never offers to
- * install Node itself.
+ * Upstream installers and tools are often interactive: they ask whether to
+ * install or reinstall, whether to edit your shell profile, or whether to start
+ * the tool. Each of those prompts is guarded by a `/dev/tty` check, so a child
+ * in its own session (`detached`, i.e. no controlling terminal) takes the
+ * default action instead of prompting. stdin is closed as well, so the command
+ * cannot read from the user's terminal either. PATH gets the mise shims first,
+ * so node/npm come from mise and an installer never offers to install Node
+ * itself.
  *
- * `shellCommand` is the full pipeline, for example
+ * `shellCommand` is the full command line, for example
  * `curl -fsSL https://example.com/install.sh | bash`. The interpreter is up to
- * the caller because some installers use bash-only syntax. The pipeline runs
+ * the caller because some installers use bash-only syntax. The command runs
  * under `bash -o pipefail`, so a failed `curl` (offline, 404) is not masked by
  * an empty stdin that makes the inner shell exit 0.
  *
- * Resolves with the installer's exit code, or `null` when a signal killed it.
+ * Resolves with the command's exit code, or `null` when a signal killed it.
  */
-export function runInstaller(
+export function runUnattended(
   shellCommand: string,
   extraEnv: NodeJS.ProcessEnv = {},
 ): Promise<number | null> {

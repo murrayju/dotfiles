@@ -31,7 +31,7 @@ The new bootstrap system will:
 - Install [Homebrew](https://brew.sh/) and the formulae in `Brewfile` (macOS and Linux)
 - Install [mise](https://mise.jdx.dev/) and the tools in `dotfiles/.config/mise/config.toml`
 - Install or upgrade the [gh-stack](https://github.com/github/gh-stack) GitHub CLI extension (`./bs gh-stack`)
-- Install [pi](https://pi.dev/) if it is not already installed
+- Install [pi](https://pi.dev/) if it is not already installed, then update pi and its packages
 - Clone [murrayju/skills](https://github.com/murrayju/skills) into `~/.agents/skills` and fast-forward it to latest `main`
 - Clone [pi-herdr-subagents](https://github.com/murrayju/pi-herdr-subagents) into Pi's global extensions and fast-forward it to latest `main`
 - Install the [Concentrate CLI](https://github.com/concentrateai-hq/cli) (`cn`) if it is not already installed
@@ -47,7 +47,7 @@ On Linux the bootstrap does **not** install distro packages. Do that once, separ
 cd ~/.dotfiles && ./bs apt
 ```
 
-The pi installer is normally interactive; the bootstrap runs it without a controlling terminal, which makes it take its default action and install noninteractively. Re-run it on its own with `./bs pi`. The shell config puts `~/.pi/agent/bin` on `$PATH`, so a freshly installed pi is usable after `reload`.
+The pi installer is normally interactive; the bootstrap runs it without a controlling terminal, which makes it take its default action and install noninteractively. Re-run it on its own with `./bs pi`, which also runs `pi update` and `pi update --extensions`, so an existing install is brought up to date on every bootstrap. The shell config puts `~/.pi/agent/bin` on `$PATH`, so a freshly installed pi is usable after `reload`.
 
 The Concentrate CLI is installed the same way (noninteractively) with `./bs concentrate`. It needs Node.js 22.13+, which mise provides, and puts its `cn` launcher in `~/.local/bin`, which the shell config already puts on `$PATH`.
 
@@ -132,7 +132,7 @@ The bootstrap uses three package managers:
 - **apt** (`packages/apt.txt`, `./bs apt`): Debian/Ubuntu packages (gnupg, openssh-client, bash-completion, bubblewrap, …). Linux-only and opt-in, because it needs sudo.
 - **mise** (`dotfiles/.config/mise/config.toml`): language runtimes and developer CLIs (Node, Go, Neovim, ripgrep, starship, and more). Projects can pin their own versions with a `mise.toml` or `.tool-versions` file.
 - **gh-stack** (`targets/gh-stack.ts`, `./bs gh-stack`): installs or upgrades the official `github/gh-stack` extension for `gh` after mise installs `gh`. Skips with a warning if `gh` is missing, offline, or another extension owns `gh stack`.
-- **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing. Not a package manager, but it is the one tool that installs itself outside of them.
+- **pi** (`targets/pi.ts`, `./bs pi`): installed with <https://pi.dev/install.sh> when it is missing, then updated with `pi update` and `pi update --extensions`. Not a package manager, but it is the one tool that installs itself outside of them, so the step updates it in place. An update that fails only warns, because the rest of the bootstrap still has work to do.
 - **Concentrate CLI** (`targets/concentrate.ts`, `./bs concentrate`): installed with its [install script](https://github.com/concentrateai-hq/cli) when `cn` is missing. Like pi, it installs itself outside the package managers and only needs Node.js 22.13+ (from mise).
 - **Concentrate API key** (`targets/concentrate-key.ts`, `./bs concentrate-key`): asks for the key with `cn key` when cn has none saved, so the secret stays in cn's own config directory. Skipped when a key is saved, when `CONCENTRATE_API_KEY` is set, or when stdin is not a terminal.
 - **Pi catalog pruner** (`bin/pi-concentrate-prune`, `targets/concentrate-prune.ts`, `./bs concentrate-prune`): copied to `~/bin` on every bootstrap, then `cn refresh` runs and the pruner keeps the newest model of each chosen line.

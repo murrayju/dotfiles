@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import * as path from 'path';
 import { execSync } from 'child_process';
 import * as os from 'os';
-import { runInstaller } from './install-script.ts';
+import { runUnattended } from './install-script.ts';
 
 const HOME_DIR: string = os.homedir();
 const PI_INSTALL_URL: string = 'https://pi.dev/install.sh';
@@ -53,22 +53,30 @@ export function withPiOnPath(env: NodeJS.ProcessEnv): NodeJS.ProcessEnv {
 }
 
 /**
- * Install pi if it is not already present.
+ * Install pi if it is not already present, then update pi and its packages.
  *
- * `runInstaller` runs it without a controlling terminal, so its install/
- * reinstall/profile/start prompts take their default action.
+ * `runUnattended` runs both without a controlling terminal, so a prompt takes
+ * its default action instead of waiting for input.
  */
 export default async function installPi(): Promise<void> {
+  if (!(await ensurePiInstalled())) {
+    return;
+  }
+  await updatePi();
+}
+
+/** Install pi when it is missing. Returns true when pi is present afterwards. */
+async function ensurePiInstalled(): Promise<boolean> {
   const existing = findPi();
   if (existing) {
     console.log(`✅ pi already installed (${existing})`);
-    return;
+    return true;
   }
 
   console.log('Installing pi...');
   let status: number | null = null;
   try {
-    status = await runInstaller(`curl -fsSL ${PI_INSTALL_URL} | sh`);
+    status = await runUnattended(`curl -fsSL ${PI_INSTALL_URL} | sh`);
   } catch {
     status = -1;
   }
@@ -76,16 +84,53 @@ export default async function installPi(): Promise<void> {
   if (status !== 0) {
     console.warn('⚠️  pi installation failed. Install it manually with:');
     console.warn(`  curl -fsSL ${PI_INSTALL_URL} | sh`);
-    return;
+    return false;
   }
 
   const installed = findPi();
   if (installed) {
     console.log(`✅ pi installed (${installed})`);
-    return;
+    return true;
   }
   console.log('✅ pi installed, but it is not on the PATH of this shell yet.');
   console.log(
     `  The dotfiles put ${PI_BIN_DIR} on $PATH; run \`reload\` or start a new shell.`,
   );
+  return true;
+}
+
+// `pi update` updates pi itself; installed packages need their own pass.
+const PI_UPDATE_ARGV: string[][] = [['update'], ['update', '--extensions']];
+
+/**
+ * Update pi and its installed packages to the latest versions.
+ *
+ * A bootstrap on a machine that already has pi should not leave it stale. Both
+ * commands are best-effort: an offline machine, a package manager that owns
+ * pi, or a failing npm must only warn, because the rest of the bootstrap still
+ * has work to do.
+ */
+async function updatePi(): Promise<void> {
+  const pi = findPi();
+  if (!pi) {
+    console.warn('⚠️  Could not find pi, so it was not updated.');
+    console.warn('  Run `reload`, then `pi update && pi update --extensions`.');
+    return;
+  }
+
+  console.log('Updating pi and its packages...');
+  for (const argv of PI_UPDATE_ARGV) {
+    let status: number | null = null;
+    try {
+      // The path is quoted because it comes from the home directory name.
+      status = await runUnattended(`"${pi}" ${argv.join(' ')}`);
+    } catch {
+      status = -1;
+    }
+    if (status !== 0) {
+      console.warn(
+        `⚠️  \`pi ${argv.join(' ')}\` failed. Run it by hand to update pi.`,
+      );
+    }
+  }
 }

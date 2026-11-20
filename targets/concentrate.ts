@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import * as path from 'path';
 import * as os from 'os';
-import { runInstaller } from './install-script.ts';
+import { runUnattended } from './install-script.ts';
 
 const HOME_DIR: string = os.homedir();
 const CN_INSTALL_URL: string =
@@ -63,7 +63,7 @@ export default async function installConcentrate(): Promise<void> {
   console.log('Installing Concentrate CLI (cn)...');
   let status: number | null = null;
   try {
-    status = await runInstaller(`curl -fsSL ${CN_INSTALL_URL} | bash`, {
+    status = await runUnattended(`curl -fsSL ${CN_INSTALL_URL} | bash`, {
       CN_INSTALL_SKIP_REFRESH: '1',
     });
   } catch {

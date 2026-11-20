@@ -294,7 +294,7 @@ export default async function main() {
   console.log('\n📚 Installing GitHub CLI gh-stack extension...');
   await installGhStack();
 
-  console.log('\n🤖 Installing pi...');
+  console.log('\n🤖 Installing or updating pi...');
   await installPi();
 
   console.log('\n📚 Installing agent skills...');
