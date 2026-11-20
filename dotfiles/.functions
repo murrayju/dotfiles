@@ -15,6 +15,21 @@ function bun() {
 	fi;
 }
 
+# Update the dotfiles and run the bootstrap, from any directory: `git pull`
+# and `./bs` in the dotfiles repository.
+function dotbs() {
+	# The bootstrap symlinks ~/.functions into the repository, so it names the
+	# repository's dotfiles/ directory even when the clone lives elsewhere.
+	local repo;
+	repo="$(cd -P "$(dirname "$(readlink "$HOME/.functions" 2> /dev/null || echo "$HOME/.functions")")/.." 2> /dev/null && pwd)";
+	if [ -z "$repo" ] || [ ! -x "$repo/bs" ]; then
+		echo "dotbs: cannot find the dotfiles repository; ~/.functions is not a symlink into a clone" >&2;
+		return 1;
+	fi;
+	# The subshell changes directory, so this shell keeps its own directory.
+	(cd "$repo" && git pull && ./bs);
+}
+
 # Create a .tar.gz archive, using `zopfli`, `pigz` or `gzip` for compression
 function targz() {
 	local tmpFile="${@%/}.tar";
