@@ -175,6 +175,14 @@
 [pull]
 	rebase = true
 
+[tag]
+
+	# Sign every tag by default. A plain `git tag name` becomes an annotated,
+	# signed tag, so it needs a message; scripts that want a lightweight tag
+	# must pass --no-sign.
+	# https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-tags
+	gpgSign = true
+
 # URL shorthands
 
 [url "git@github.com:"]
